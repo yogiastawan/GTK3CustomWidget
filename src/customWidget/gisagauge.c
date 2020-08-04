@@ -1,4 +1,5 @@
 #include "gisagauge.h"
+#include <math.h>
 
 /* Properties enum*/
 enum
@@ -134,11 +135,39 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
 {
     GisaGaugePrivate *priv = GISA_GAUGE(widget)->priv;
     GtkAllocation alloc;
+    guint size=0;
     gtk_widget_get_allocation(widget, &alloc);
-    cairo_set_source_rgb(cr, 0, 0, 1);
-    cairo_rectangle(cr, priv->value, priv->value, ((double)alloc.width) - (2 * priv->value), ((double)alloc.height) - (2 * priv->value));
-    cairo_fill(cr);
-    // cairo_destroy(cr);
+
+    if (alloc.height<=alloc.width)
+    {
+        size=alloc.height;
+    }else
+    {
+        size=alloc.width;
+    }    
+    // g_print("linei: %f",cairo_get_line_width(cr));//2
+    guint ro=(size-2)/2;
+    guint ri=(size-2)/3;
+    cairo_arc(cr,size/2,size/2,ro,120*G_PI/180,420*G_PI/180);
+    cairo_arc(cr,(size/2)-(((ro+ri)/2)*sin(330*G_PI/180)),(size/2)+(((ro+ri)/2)*cos(330*G_PI/180)),(ro-ri)/2,60*G_PI/180,240*G_PI/180);
+    cairo_arc_negative(cr,size/2,size/2,ri,60*G_PI/180,120*G_PI/180);
+    cairo_arc(cr,(size/2)-(((ro+ri)/2)*sin(30*G_PI/180)),(size/2)+(((ro+ri)/2)*cos(30*G_PI/180)),(ro-ri)/2,300*G_PI/180,120*G_PI/180);
+    cairo_close_path(cr);
+    // cairo_set_source_rgb(cr,0,0.6,0.8);
+    // cairo_fill_preserve(cr);
+    cairo_set_source_rgb(cr, 0, 0, 0);    
+    cairo_stroke(cr);
+    // value
+    // gdouble deg=((3*priv->value)+30)*G_PI/180;
+    g_print("val: %f\n",priv->value);
+    cairo_arc(cr,size/2,size/2,ro-2,120*G_PI/180,((3*priv->value)+120)*G_PI/180);
+    cairo_arc(cr,(size/2)-(((ro+ri)/2)*sin(((3*priv->value)+30)*G_PI/180)),(size/2)+(((ro+ri)/2)*cos(((3*priv->value)+30)*G_PI/180)),(ro-ri-4)/2,(120+(3*priv->value))*G_PI/180,(300+(3*priv->value))*G_PI/180);
+    cairo_arc_negative(cr,size/2,size/2,ri+2,(120+(3*priv->value))*G_PI/180,120*G_PI/180);
+    cairo_arc(cr,(size/2)-(((ro+ri)/2)*sin(30*G_PI/180)),(size/2)+(((ro+ri)/2)*cos(30*G_PI/180)),(ro-ri-4)/2,300*G_PI/180,120*G_PI/180);
+    cairo_close_path(cr);
+    cairo_set_source_rgb(cr,0,0.6,0.8);
+    cairo_fill_preserve(cr);
+    cairo_set_line_width(cr,0);
     return FALSE;
 }
 static void gisa_gauge_get_preferred_height(GtkWidget *widget, gint *minimum_height, gint *natural_height)
@@ -168,7 +197,7 @@ gdouble gisa_gauge_get_value(GisaGauge *widget)
 
 void gisa_gauge_set_value(GisaGauge *widget, gdouble value)
 {
-    g_return_if_fail(GISA__IS_GAUGE(widget));
+    g_return_if_fail(GISA_IS_GAUGE(widget));
     widget->priv->value = value;
     gtk_widget_queue_draw(GTK_WIDGET(widget));
 }

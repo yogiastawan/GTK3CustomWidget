@@ -50,11 +50,11 @@ void main_ui(GtkApplication *app, gpointer *user_data)
 void increaseValue(GtkWidget *widget,gpointer *data)
 {
 	(void) widget;
-	gisa_gauge_set_value(GISA_GAUGE(data),gisa_gauge_get_value(GISA_GAUGE(data))+5);
+	gisa_gauge_set_value(GISA_GAUGE(data),gisa_gauge_get_value(GISA_GAUGE(data))+1);
 }
 
 void decreaseValue(GtkWidget *widget,gpointer *data)
 {
 	(void) widget;
-	gisa_gauge_set_value(GISA_GAUGE(data),gisa_gauge_get_value(GISA_GAUGE(data))-5);
+	gisa_gauge_set_value(GISA_GAUGE(data),gisa_gauge_get_value(GISA_GAUGE(data))-1);
 }

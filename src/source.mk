@@ -1,5 +1,5 @@
 CC= gcc
-CFLAGS= -Wall -Werror -Wextra -v -std=c99
+CFLAGS= -Wall -Werror -Wextra -v -std=c99 -lm
 DBGCFLAGS= -g
 
 GTKFLAGS=`pkg-config --cflags --libs gtk+-3.0`

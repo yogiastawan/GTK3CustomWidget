@@ -56,11 +56,11 @@ static void gisa_gauge_class_init(GisaGaugeClass *klass)
     w_class->draw = gisa_gauge_draw;
 
     /* Install Property */
-    pspec = g_param_spec_double("value", "Value", "Value will show", 0, G_MAXDOUBLE, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    pspec = g_param_spec_double("value", "Value", "Value will show", G_MINDOUBLE, G_MAXDOUBLE, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_VALUE, pspec);
-    pspec_maxValue = g_param_spec_double("max-value", "MaxValue", "Max value will hold", 0, G_MAXDOUBLE, 100, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    pspec_maxValue = g_param_spec_double("max-value", "MaxValue", "Max value will hold", G_MINDOUBLE, G_MAXDOUBLE, 100, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_MAX_VALUE, pspec_maxValue);
-    pspec_minValue = g_param_spec_double("min-value", "MinValue", "Min value will hold", 0, G_MAXDOUBLE, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    pspec_minValue = g_param_spec_double("min-value", "MinValue", "Min value will hold", G_MINDOUBLE, G_MAXDOUBLE, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_MIN_VALUE, pspec_minValue);
 }
 

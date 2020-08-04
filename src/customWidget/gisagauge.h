@@ -41,6 +41,16 @@ void gisa_gauge_set_value(GisaGauge *widget, gdouble value);
 //get value widget
 gdouble gisa_gauge_get_value(GisaGauge *widget);
 
+//set max value
+void gisa_gauge_set_max_value(GisaGauge *widget, gdouble maxValue);
+//get max value
+gdouble gisa_gauge_get_max_value(GisaGauge *widget);
+
+//set min value
+void gisa_gauge_set_min_value(GisaGauge *widget, gdouble minValue);
+//get min value
+gdouble gisa_gauge_get_min_value(GisaGauge *widget);
+
 G_END_DECLS
 
 #endif /*__GISAGAUGE_H__*/

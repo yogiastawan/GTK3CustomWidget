@@ -41,6 +41,8 @@ static void gisa_gauge_class_init(GisaGaugeClass *klass)
     GParamSpec *pspec_maxValue;
     GParamSpec *pspec_minValue;
 
+    GParamSpec *colorstyle;
+
     g_class = G_OBJECT_CLASS(klass);
     /* Override widget class methods */
     g_class->set_property = gisa_gauge_set_property;
@@ -56,12 +58,15 @@ static void gisa_gauge_class_init(GisaGaugeClass *klass)
     w_class->draw = gisa_gauge_draw;
 
     /* Install Property */
-    pspec = g_param_spec_double("value", "Value", "Value will show", G_MINDOUBLE, G_MAXDOUBLE, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    pspec = g_param_spec_double("gisa-value", "Value", "Value will show", -G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_VALUE, pspec);
-    pspec_maxValue = g_param_spec_double("max-value", "MaxValue", "Max value will hold", G_MINDOUBLE, G_MAXDOUBLE, 100, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    pspec_maxValue = g_param_spec_double("gisa-max-value", "MaxValue", "Max value will hold", -G_MINDOUBLE, G_MAXDOUBLE, 100.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_MAX_VALUE, pspec_maxValue);
-    pspec_minValue = g_param_spec_double("min-value", "MinValue", "Min value will hold", G_MINDOUBLE, G_MAXDOUBLE, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    pspec_minValue = g_param_spec_double("gisa-min-value", "MinValue", "Min value will hold", -G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_MIN_VALUE, pspec_minValue);
+    colorstyle = g_param_spec_boxed("gisa-gauge-color", "Color Gauge", "Gauge Color", GDK_TYPE_RGBA, G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, colorstyle);
+    gtk_widget_class_set_css_name(w_class,"gisa-gauge");
 }
 
 static void gisa_gauge_init(GisaGauge *widget)
@@ -169,7 +174,10 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     {
         size = alloc.width;
     }
-    // g_print("linei: %f",cairo_get_line_width(cr));//2
+    // GValue *a;
+    // gtk_widget_style_get_property(widget,"color-gauge",a);
+    // g_value_get
+    // g_print("linei: %s",);//2
     guint ro = (size - 2) / 2;
     guint ri = (size - 2) / 3;
     cairo_arc(cr, size / 2, size / 2, ro, 120 * G_PI / 180, 420 * G_PI / 180);
@@ -185,7 +193,7 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     // gdouble deg=((3*priv->value)+30)*G_PI/180;
     if (priv->value > priv->minvalue)
     {
-        g_print("val: %f\n", priv->value);
+        // g_print("val: %f\n", priv->value);
         cairo_arc(cr, size / 2, size / 2, ro - 2, 120 * G_PI / 180, ((3 * priv->value) + 120) * G_PI / 180);
         cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(((3 * priv->value) + 30) * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(((3 * priv->value) + 30) * G_PI / 180)), (ro - ri - 4) / 2, (120 + (3 * priv->value)) * G_PI / 180, (300 + (3 * priv->value)) * G_PI / 180);
         cairo_arc_negative(cr, size / 2, size / 2, ri + 2, (120 + (3 * priv->value)) * G_PI / 180, 120 * G_PI / 180);

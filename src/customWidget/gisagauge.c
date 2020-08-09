@@ -15,7 +15,7 @@ struct _GisaGaugePrivate
 {
     gdouble value;
     gdouble maxValue;
-    gdouble minvalue;
+    gdouble minValue;
     GdkWindow *window;
 };
 
@@ -64,7 +64,8 @@ static void gisa_gauge_class_init(GisaGaugeClass *klass)
     g_object_class_install_property(g_class, P_MAX_VALUE, pspec_maxValue);
     pspec_minValue = g_param_spec_double("gisa-min-value", "MinValue", "Min value will hold", -G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_MIN_VALUE, pspec_minValue);
-    colorstyle = g_param_spec_boxed("gisa-gauge-color", "Color Gauge", "Gauge Color", GDK_TYPE_RGBA, G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    // colorstyle = g_param_spec_boxed("gisa-gauge-color", "Color Gauge", "Gauge Color", gdk_rgba_get_type(), G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    colorstyle=g_param_spec_int("gisa-gauge-size","Gisa gauge size", "Just Test",0,100,10,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
     gtk_widget_class_install_style_property(w_class, colorstyle);
     gtk_widget_class_set_css_name(w_class,"gisa-gauge");
 }
@@ -79,7 +80,7 @@ static void gisa_gauge_init(GisaGauge *widget)
     //set default value
     priv->value = 0;
     priv->maxValue = 100;
-    priv->minvalue = 0;
+    priv->minValue = 0;
 
     //create cache for faster access
     widget->priv = priv;
@@ -118,7 +119,7 @@ static void gisa_gauge_get_property(GObject *object, guint prop_id, GValue *valu
         g_value_set_double(value, widget->priv->maxValue);
         break;
     case P_MIN_VALUE:
-        g_value_set_double(value, widget->priv->minvalue);
+        g_value_set_double(value, widget->priv->minValue);
         break;
 
     default:
@@ -166,6 +167,9 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     guint size = 0;
     gtk_widget_get_allocation(widget, &alloc);
 
+    gtk_widget_style_get(widget,"gisa-gauge-size",&size,NULL);
+    g_print("size: %d",size);
+
     if (alloc.height <= alloc.width)
     {
         size = alloc.height;
@@ -191,12 +195,12 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     cairo_stroke(cr);
     // value
     // gdouble deg=((3*priv->value)+30)*G_PI/180;
-    if (priv->value > priv->minvalue)
+    if (priv->value > priv->minValue)
     {
         // g_print("val: %f\n", priv->value);
-        cairo_arc(cr, size / 2, size / 2, ro - 2, 120 * G_PI / 180, ((3 * priv->value) + 120) * G_PI / 180);
-        cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(((3 * priv->value) + 30) * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(((3 * priv->value) + 30) * G_PI / 180)), (ro - ri - 4) / 2, (120 + (3 * priv->value)) * G_PI / 180, (300 + (3 * priv->value)) * G_PI / 180);
-        cairo_arc_negative(cr, size / 2, size / 2, ri + 2, (120 + (3 * priv->value)) * G_PI / 180, 120 * G_PI / 180);
+        cairo_arc(cr, size / 2, size / 2, ro - 2, 120 * G_PI / 180, ((300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue)) + 120) * G_PI / 180);
+        cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(((300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue)) + 30) * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(((300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue)) + 30) * G_PI / 180)), (ro - ri - 4) / 2, (120 + (300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue))) * G_PI / 180, (300 * (1 + ((priv->value-priv->minValue)/(priv->maxValue-priv->minValue)))) * G_PI / 180);
+        cairo_arc_negative(cr, size / 2, size / 2, ri + 2, ((300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue)) + 120) * G_PI / 180, 120 * G_PI / 180);
         cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(30 * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(30 * G_PI / 180)), (ro - ri - 4) / 2, 300 * G_PI / 180, 120 * G_PI / 180);
         cairo_close_path(cr);
         cairo_set_source_rgb(cr, 0, 0.6, 0.8);
@@ -233,9 +237,9 @@ gdouble gisa_gauge_get_value(GisaGauge *widget)
 void gisa_gauge_set_value(GisaGauge *widget, gdouble value)
 {
     g_return_if_fail(GISA_IS_GAUGE(widget));
-    if (value < widget->priv->minvalue)
+    if (value < widget->priv->minValue)
     {
-        value = widget->priv->minvalue;
+        value = widget->priv->minValue;
     }
     else if (value > widget->priv->maxValue)
     {
@@ -260,12 +264,12 @@ gdouble gisa_gauge_get_max_value(GisaGauge *widget)
 void gisa_gauge_set_min_value(GisaGauge *widget, gdouble minValue)
 {
     g_return_if_fail(GISA_IS_GAUGE(widget));
-    widget->priv->minvalue = minValue;
+    widget->priv->minValue = minValue;
     gtk_widget_queue_draw(GTK_WIDGET(widget));
 }
 
 gdouble gisa_gauge_get_min_value(GisaGauge *widget)
 {
     g_return_val_if_fail(GISA_IS_GAUGE(widget), 0);
-    return (widget->priv->minvalue);
+    return (widget->priv->minValue);
 }

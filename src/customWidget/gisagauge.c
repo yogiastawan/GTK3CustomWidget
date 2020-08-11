@@ -167,8 +167,8 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     guint size = 0;
     gtk_widget_get_allocation(widget, &alloc);
 
-    gtk_widget_style_get(widget,"gisa-gauge-size",&size,NULL);
-    g_print("size: %d",size);
+    // gtk_widget_style_get(widget,"gisa-gauge-size",&size,NULL);
+    // g_print("size: %d",size);
 
     if (alloc.height <= alloc.width)
     {
@@ -212,13 +212,13 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
 static void gisa_gauge_get_preferred_height(GtkWidget *widget, gint *minimum_height, gint *natural_height)
 {
     (void)widget;
-    *minimum_height = 150;
+    *minimum_height = 120;
     *natural_height = 300;
 }
 static void gisa_gauge_get_preferred_width(GtkWidget *widget, gint *minimum_width, gint *natural_width)
 {
     (void)widget;
-    *minimum_width = 150;
+    *minimum_width = 120;
     *natural_width = 300;
 }
 

@@ -146,17 +146,62 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
         size=alloc.height;
     }
     cairo_save(cr);
+    //transform rotate
+    cairo_translate(cr, size/2, size/2);
+    cairo_rotate(cr, -priv->value*G_PI/180);
+    cairo_translate(cr, (double)-1*size/2, (double)-1*size/2);
+
+    cairo_save(cr);
     cairo_arc(cr, size/2, size/2, (size-2)/2, 0, 2*G_PI);
     cairo_move_to(cr, (size/2)+((size-2)/3), size/2);
     cairo_arc(cr, size/2, size/2, (size-2)/3, 0, 2*G_PI);
+    cairo_set_source_rgba(cr, 1, 0, 1, 1);
+    cairo_set_fill_rule(cr, CAIRO_FILL_RULE_EVEN_ODD);
+    cairo_fill_preserve(cr);
+    cairo_set_source_rgba(cr, 0, 0, 0, 1);
+    cairo_stroke(cr);
+    cairo_restore(cr);
+    //draw tick
+    guint8 i;
+    cairo_save(cr);
+    for (i = 0; i < 72; i++)
+    {
+        if (i%18==0)
+        {
+            //draw char
+        }
+        else if (i%3==0&&i>0)
+        {
+            //draw bigger tick (45 deg)
+            cairo_move_to(cr, (size/2)+((((size-2)/2)-size/30)*sin(i*5*G_PI/180)), (size/2)-((((size-2)/2)-size/30)*cos(i*5*G_PI/180)));
+            cairo_line_to(cr, (size/2)+((((size-2)/3)+size/30)*sin(i*5*G_PI/180)), (size/2)-((((size-2)/3)+size/30)*cos(i*5*G_PI/180)));
+        }
+        else
+        {
+            //draw tick normal
+            cairo_move_to(cr, (size/2)+((((size-2)/2)-size/20)*sin(i*5*G_PI/180)), (size/2)-((((size-2)/2)-size/20)*cos(i*5*G_PI/180)));
+            cairo_line_to(cr, (size/2)+((((size-2)/3)+size/20)*sin(i*5*G_PI/180)), (size/2)-((((size-2)/3)+size/20)*cos(i*5*G_PI/180)));
+        }
+    }
+    cairo_set_line_width(cr, 1.5);
+    cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+    cairo_stroke(cr);
+    cairo_restore(cr);
+
     if (priv->value!=0)
     {
         //draw arc indicator   
     }
     //draw triangle 1
-    //transform rotate
-    cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_stroke(cr);
+    cairo_save(cr);
+    cairo_move_to(cr, size/2, (size+4)/6);
+    cairo_line_to(cr, (size/2)-(sin(G_PI/6)*size/8), ((size+4)/6)+(cos(G_PI/6)*size/8));
+    cairo_line_to(cr, (size/2)+(sin(G_PI/6)*size/8), ((size+4)/6)+(cos(G_PI/6)*size/8));
+    cairo_close_path(cr);
+    cairo_set_source_rgb(cr, 0, 0, 1);
+    cairo_fill(cr);
+    cairo_restore(cr);
+
     cairo_restore(cr);
     //draw triangle;
     cairo_move_to(cr, size/2, (size+4)/6);
@@ -166,8 +211,8 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     if (priv->value==0)
     {
         cairo_set_source_rgb(cr, 0, 0, 1);
-    }    
-else
+    }
+    else
     {
         cairo_set_source_rgb(cr, 0.5, 1, 0);
     }

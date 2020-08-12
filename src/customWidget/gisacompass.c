@@ -185,7 +185,20 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             cairo_rotate(cr, i * 2.5 * G_PI / 180);
             cairo_translate(cr, -cx, -cy);
             cairo_move_to(cr, cx - ((text_extents.width / 2) + text_extents.x_bearing), cy - ((text_extents.height / 2) + text_extents.y_bearing));
-            cairo_show_text(cr, lbl[i / 36]);
+            // cairo_show_text(cr, lbl[i / 36]);
+            cairo_text_path(cr, lbl[i / 36]);
+            cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+            gdouble abs = priv->value;
+            if (priv->value < 0)
+            {
+                abs = 360 + priv->value;
+            }
+
+            if (abs == (double)i * 2.5)
+            {
+                cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
+            }
+            cairo_fill(cr);
             cairo_restore(cr);
         }
         else if (i % 36 == 35 || i % 36 == 1)

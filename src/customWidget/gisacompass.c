@@ -50,7 +50,7 @@ static void gisa_compass_class_init(GisaCompassClass *klass)
     w_class->draw = gisa_compass_draw;
 
     /* Install Property */
-    pspec=g_param_spec_double("value", "Value", "Value will show", -360, 360, 0, G_PARAM_READWRITE|G_PARAM_STATIC_STRINGS);
+    pspec = g_param_spec_double("value", "Value", "Value will show", -360, 360, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_property(g_class, P_VALUE, pspec);
 }
@@ -59,7 +59,7 @@ static void gisa_compass_init(GisaCompass *widget)
 {
     GisaCompassPrivate *priv;
     // priv = G_TYPE_INSTANCE_GET_PRIVATE(widget, GISA_TYPE_COMPASS, GisaCompassPrivate);//deprecated
-    priv=gisa_compass_get_instance_private(widget);
+    priv = gisa_compass_get_instance_private(widget);
     gtk_widget_set_has_window(GTK_WIDGET(widget), TRUE);
 
     //set default value
@@ -136,31 +136,32 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     GisaCompassPrivate *priv = GISA_COMPASS(widget)->priv;
     GtkAllocation alloc;
     gtk_widget_get_allocation(widget, &alloc);
+    char *lbl[] = {"N", "E", "S", "W"};
     guint size;
-    if (alloc.width<=alloc.height)
+    if (alloc.width <= alloc.height)
     {
-        size=alloc.width;
+        size = alloc.width;
     }
     else
     {
-        size=alloc.height;
+        size = alloc.height;
     }
 
-    if (priv->value==-360||priv->value==360)
+    if (priv->value == -360 || priv->value == 360)
     {
-        priv->value=0;
+        priv->value = 0;
     }
-    
+
     cairo_save(cr);
     //transform rotate
-    cairo_translate(cr, size/2, size/2);
-    cairo_rotate(cr, -priv->value*G_PI/180);
-    cairo_translate(cr, (double)-1*size/2, (double)-1*size/2);
+    cairo_translate(cr, size / 2, size / 2);
+    cairo_rotate(cr, -priv->value * G_PI / 180);
+    cairo_translate(cr, (double)-1 * size / 2, (double)-1 * size / 2);
 
     cairo_save(cr);
-    cairo_arc(cr, size/2, size/2, (size-2)/2, 0, 2*G_PI);
-    cairo_move_to(cr, (size/2)+((size-2)/3), size/2);
-    cairo_arc(cr, size/2, size/2, (size-2)/3, 0, 2*G_PI);
+    cairo_arc(cr, size / 2, size / 2, (size - 2) / 2, 0, 2 * G_PI);
+    cairo_move_to(cr, (size / 2) + ((size - 2) / 3), size / 2);
+    cairo_arc(cr, size / 2, size / 2, (size - 2) / 3, 0, 2 * G_PI);
     cairo_set_source_rgba(cr, 1, 1, 1, 1);
     cairo_set_fill_rule(cr, CAIRO_FILL_RULE_EVEN_ODD);
     cairo_fill_preserve(cr);
@@ -170,46 +171,60 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     //draw tick
     guint8 i;
     cairo_save(cr);
+
     for (i = 0; i < 72; i++)
     {
-        if (i%18==0)
+        if (i % 18 == 0)
         {
-            //draw char
+            cairo_save(cr);
+            cairo_select_font_face(cr,"monospace",CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_BOLD);
+            cairo_text_extents_t text_extents;
+            cairo_set_font_size(cr,size*18/300);
+            cairo_text_extents(cr, lbl[i / 18], &text_extents);
+            gdouble cx = (size / 2) + (((5 * size) / 12) * sin(i * 5 * G_PI / 180));
+            gdouble cy = (size / 2) - (((5 * size) / 12) * cos(i * 5 * G_PI / 180));
+            cairo_translate(cr,cx,cy);
+            cairo_rotate(cr,i*5*G_PI/180);
+            cairo_translate(cr,-cx,-cy);
+            cairo_move_to(cr, cx - ((text_extents.width / 2) + text_extents.x_bearing), cy - ((text_extents.height / 2) + text_extents.y_bearing));
+            cairo_show_text(cr, lbl[i / 18]);            
+            cairo_restore(cr);
         }
-        else if (i%3==0&&i>0)
+        else if (i % 3 == 0 && i > 0)
         {
             //draw bigger tick (45 deg)
-            cairo_move_to(cr, (size/2)+((((size-2)/2)-size/30)*sin(i*5*G_PI/180)), (size/2)-((((size-2)/2)-size/30)*cos(i*5*G_PI/180)));
-            cairo_line_to(cr, (size/2)+((((size-2)/3)+size/30)*sin(i*5*G_PI/180)), (size/2)-((((size-2)/3)+size/30)*cos(i*5*G_PI/180)));
+            cairo_move_to(cr, (size / 2) + ((((size - 2) / 2) - size / 30) * sin(i * 5 * G_PI / 180)), (size / 2) - ((((size - 2) / 2) - size / 30) * cos(i * 5 * G_PI / 180)));
+            cairo_line_to(cr, (size / 2) + ((((size - 2) / 3) + size / 30) * sin(i * 5 * G_PI / 180)), (size / 2) - ((((size - 2) / 3) + size / 30) * cos(i * 5 * G_PI / 180)));
         }
         else
         {
             //draw tick normal
-            cairo_move_to(cr, (size/2)+((((size-2)/2)-size/20)*sin(i*5*G_PI/180)), (size/2)-((((size-2)/2)-size/20)*cos(i*5*G_PI/180)));
-            cairo_line_to(cr, (size/2)+((((size-2)/3)+size/20)*sin(i*5*G_PI/180)), (size/2)-((((size-2)/3)+size/20)*cos(i*5*G_PI/180)));
+            cairo_move_to(cr, (size / 2) + ((((size - 2) / 2) - size / 20) * sin(i * 5 * G_PI / 180)), (size / 2) - ((((size - 2) / 2) - size / 20) * cos(i * 5 * G_PI / 180)));
+            cairo_line_to(cr, (size / 2) + ((((size - 2) / 3) + size / 20) * sin(i * 5 * G_PI / 180)), (size / 2) - ((((size - 2) / 3) + size / 20) * cos(i * 5 * G_PI / 180)));
         }
     }
     cairo_set_line_width(cr, 1.5);
     cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
     cairo_stroke(cr);
     cairo_restore(cr);
-    if (priv->value!=0)
+    if (priv->value != 0)
     {
         cairo_save(cr);
-        if (priv->value>0&&priv->value<=180) {
-            cairo_arc(cr, size/2, size/2, (size-2)/3, 3*G_PI/2, (270+priv->value)*G_PI/180);
-        }
-        else if (priv->value>0&&priv->value>180)
+        if (priv->value > 0 && priv->value <= 180)
         {
-            cairo_arc_negative(cr,size/2,size/2,(size-2)/3,3*G_PI/2,(priv->value-90)*G_PI/180);
+            cairo_arc(cr, size / 2, size / 2, (size - 2) / 3, 3 * G_PI / 2, (270 + priv->value) * G_PI / 180);
         }
-        else if (priv->value<0&&priv->value>=-180)
+        else if (priv->value > 0 && priv->value > 180)
         {
-            cairo_arc_negative(cr,size/2,size/2,(size-2)/3,3*G_PI/2,(270+priv->value)*G_PI/180);
+            cairo_arc_negative(cr, size / 2, size / 2, (size - 2) / 3, 3 * G_PI / 2, (priv->value - 90) * G_PI / 180);
         }
-        else if (priv->value<0&&priv->value<-180)
+        else if (priv->value < 0 && priv->value >= -180)
         {
-            cairo_arc(cr,size/2,size/2,(size-2)/3,3*G_PI/2,(priv->value+270)*G_PI/180);
+            cairo_arc_negative(cr, size / 2, size / 2, (size - 2) / 3, 3 * G_PI / 2, (270 + priv->value) * G_PI / 180);
+        }
+        else if (priv->value < 0 && priv->value < -180)
+        {
+            cairo_arc(cr, size / 2, size / 2, (size - 2) / 3, 3 * G_PI / 2, (priv->value + 270) * G_PI / 180);
         }
         cairo_set_line_width(cr, 1.5);
         cairo_set_source_rgba(cr, 1, 0, 0, 1);
@@ -219,9 +234,9 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
 
     //draw triangle 1
     cairo_save(cr);
-    cairo_move_to(cr, size/2, (size+4)/6);
-    cairo_line_to(cr, (size/2)-(sin(G_PI/6)*size/8), ((size+4)/6)+(cos(G_PI/6)*size/8));
-    cairo_line_to(cr, (size/2)+(sin(G_PI/6)*size/8), ((size+4)/6)+(cos(G_PI/6)*size/8));
+    cairo_move_to(cr, size / 2, (size + 4) / 6);
+    cairo_line_to(cr, (size / 2) - (sin(G_PI / 6) * size / 8), ((size + 4) / 6) + (cos(G_PI / 6) * size / 8));
+    cairo_line_to(cr, (size / 2) + (sin(G_PI / 6) * size / 8), ((size + 4) / 6) + (cos(G_PI / 6) * size / 8));
     cairo_close_path(cr);
     cairo_set_source_rgb(cr, 0, 0, 1);
     cairo_fill(cr);
@@ -229,11 +244,11 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
 
     cairo_restore(cr);
     //draw triangle;
-    cairo_move_to(cr, size/2, (size+4)/6);
-    cairo_line_to(cr, (size/2)-(sin(G_PI/6)*size/8), ((size+4)/6)+(cos(G_PI/6)*size/8));
-    cairo_line_to(cr, (size/2)+(sin(G_PI/6)*size/8), ((size+4)/6)+(cos(G_PI/6)*size/8));
+    cairo_move_to(cr, size / 2, (size + 4) / 6);
+    cairo_line_to(cr, (size / 2) - (sin(G_PI / 6) * size / 8), ((size + 4) / 6) + (cos(G_PI / 6) * size / 8));
+    cairo_line_to(cr, (size / 2) + (sin(G_PI / 6) * size / 8), ((size + 4) / 6) + (cos(G_PI / 6) * size / 8));
     cairo_close_path(cr);
-    if (priv->value==0)
+    if (priv->value == 0)
     {
         cairo_set_source_rgb(cr, 0, 0, 1);
     }
@@ -243,8 +258,6 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     }
 
     cairo_fill(cr);
-
-
 
     return FALSE;
 }
@@ -262,17 +275,20 @@ static void gisa_compass_get_preferred_width(GtkWidget *widget, gint *minimum_wi
 }
 
 /* Public API */
-GtkWidget *gisa_compass_new(void) {
+GtkWidget *gisa_compass_new(void)
+{
     return (g_object_new(GISA_TYPE_COMPASS, NULL));
 }
 
-gdouble gisa_compass_get_value(GisaCompass *widget) {
+gdouble gisa_compass_get_value(GisaCompass *widget)
+{
     g_return_val_if_fail(GISA_IS_COMPASS(widget), 0);
     return (widget->priv->value);
 }
 
-void gisa_compass_set_value(GisaCompass *widget, gdouble value) {
+void gisa_compass_set_value(GisaCompass *widget, gdouble value)
+{
     g_return_if_fail(GISA_IS_COMPASS(widget));
-    widget->priv->value=value;
+    widget->priv->value = value;
     gtk_widget_queue_draw(GTK_WIDGET(widget));
 }

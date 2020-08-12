@@ -50,7 +50,7 @@ static void gisa_compass_class_init(GisaCompassClass *klass)
     w_class->draw = gisa_compass_draw;
 
     /* Install Property */
-    pspec=g_param_spec_double("value", "Value", "Value will show", 0, 360, 0, G_PARAM_READWRITE|G_PARAM_STATIC_STRINGS);
+    pspec=g_param_spec_double("value", "Value", "Value will show", -360, 360, 0, G_PARAM_READWRITE|G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_property(g_class, P_VALUE, pspec);
 }
@@ -145,6 +145,12 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     {
         size=alloc.height;
     }
+
+    if (priv->value==-360||priv->value==360)
+    {
+        priv->value=0;
+    }
+    
     cairo_save(cr);
     //transform rotate
     cairo_translate(cr, size/2, size/2);
@@ -155,7 +161,7 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     cairo_arc(cr, size/2, size/2, (size-2)/2, 0, 2*G_PI);
     cairo_move_to(cr, (size/2)+((size-2)/3), size/2);
     cairo_arc(cr, size/2, size/2, (size-2)/3, 0, 2*G_PI);
-    cairo_set_source_rgba(cr, 1, 0, 1, 1);
+    cairo_set_source_rgba(cr, 1, 1, 1, 1);
     cairo_set_fill_rule(cr, CAIRO_FILL_RULE_EVEN_ODD);
     cairo_fill_preserve(cr);
     cairo_set_source_rgba(cr, 0, 0, 0, 1);
@@ -187,11 +193,30 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
     cairo_stroke(cr);
     cairo_restore(cr);
-
     if (priv->value!=0)
     {
-        //draw arc indicator   
+        cairo_save(cr);
+        if (priv->value>0&&priv->value<=180) {
+            cairo_arc(cr, size/2, size/2, (size-2)/3, 3*G_PI/2, (270+priv->value)*G_PI/180);
+        }
+        else if (priv->value>0&&priv->value>180)
+        {
+            cairo_arc_negative(cr,size/2,size/2,(size-2)/3,3*G_PI/2,(priv->value-90)*G_PI/180);
+        }
+        else if (priv->value<0&&priv->value>=-180)
+        {
+            cairo_arc_negative(cr,size/2,size/2,(size-2)/3,3*G_PI/2,(270+priv->value)*G_PI/180);
+        }
+        else if (priv->value<0&&priv->value<-180)
+        {
+            cairo_arc(cr,size/2,size/2,(size-2)/3,3*G_PI/2,(priv->value+270)*G_PI/180);
+        }
+        cairo_set_line_width(cr, 1.5);
+        cairo_set_source_rgba(cr, 1, 0, 0, 1);
+        cairo_stroke(cr);
+        cairo_restore(cr);
     }
+
     //draw triangle 1
     cairo_save(cr);
     cairo_move_to(cr, size/2, (size+4)/6);

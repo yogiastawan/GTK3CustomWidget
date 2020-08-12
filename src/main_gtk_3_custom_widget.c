@@ -3,8 +3,8 @@
 #include "./customWidget/gisagauge.h"
 #include "./customWidget/gisacompass.h"
 
-void increaseValue(GtkWidget *widget,gpointer *data);
-void decreaseValue(GtkWidget *widget,gpointer *data);
+void gaugeTest(GtkWidget *widget, gpointer *data);
+void compassTest(GtkWidget *widget, gpointer *data);
 void main_ui(GtkApplication *app, gpointer *user_data);
 
 int main(int argc, char *argv[])
@@ -25,40 +25,44 @@ void main_ui(GtkApplication *app, gpointer *user_data)
 	window = gtk_application_window_new(app);
 	gtk_window_set_title(GTK_WINDOW(window), (gchar*)user_data);
 
-	GtkWidget *button, *button2, *button_box, *box;
+	GtkWidget *slider1, *slider2, *slider_box, *box, *boxh;
 	GtkWidget *myGauge;
 	GtkWidget *myCompass;
 
-	button_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-	box=gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
+	slider_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
+	box=gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 	gtk_container_add(GTK_CONTAINER(window), box);
+
+	boxh=gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 
 	myGauge=gisa_gauge_new();
 	myCompass=gisa_compass_new();
+	gtk_box_pack_start(GTK_BOX(box), boxh, TRUE, TRUE, 0);
 
-	button = gtk_button_new_with_label("Increase");
-	g_signal_connect(button, "clicked", G_CALLBACK(increaseValue), myGauge);
-	gtk_container_add(GTK_CONTAINER(button_box), button);
+	GtkAdjustment *scale1Adj=gtk_adjustment_new(0, 0, 100, 1, 5, 0);
+	slider1=gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, scale1Adj);
+	g_signal_connect(slider1, "value-changed", G_CALLBACK(gaugeTest), myGauge);
+	// gtk_container_add(GTK_CONTAINER(slider_box), slider1);
+	gtk_box_pack_start(GTK_BOX(slider_box), slider1, FALSE, TRUE, 0);
 
-	button2=gtk_button_new_with_label("Decrease");
-	g_signal_connect(button2,"clicked",G_CALLBACK(decreaseValue),myGauge);
-	gtk_container_add(GTK_CONTAINER(button_box), button2);
-	
-	gtk_box_pack_start(GTK_BOX(box),myGauge,FALSE,TRUE,0);
-	gtk_box_pack_start(GTK_BOX(box),myCompass,FALSE,TRUE,0);
-	gtk_box_pack_start(GTK_BOX(box),button_box,FALSE,FALSE,0);
+	GtkAdjustment *scale2Adj=gtk_adjustment_new(0, -360, 360, 1, 5, 0);
+	slider2=gtk_scale_new(GTK_ORIENTATION_HORIZONTAL, scale2Adj);
+	g_signal_connect(slider2, "value-changed", G_CALLBACK(compassTest), myCompass);
+	gtk_box_pack_start(GTK_BOX(slider_box), slider2, FALSE, TRUE, 0);
+
+	gtk_box_pack_start(GTK_BOX(boxh), myGauge, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(boxh), myCompass, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box), slider_box, TRUE, TRUE, 0);
 
 	gtk_widget_show_all(window);
 }
 
-void increaseValue(GtkWidget *widget,gpointer *data)
+void gaugeTest(GtkWidget *widget, gpointer *data)
 {
-	(void) widget;
-	gisa_gauge_set_value(GISA_GAUGE(data),gisa_gauge_get_value(GISA_GAUGE(data))+1);
+	gisa_gauge_set_value(GISA_GAUGE(data), gtk_range_get_value(GTK_RANGE(widget)));
 }
 
-void decreaseValue(GtkWidget *widget,gpointer *data)
+void compassTest(GtkWidget *widget, gpointer *data)
 {
-	(void) widget;
-	gisa_gauge_set_value(GISA_GAUGE(data),gisa_gauge_get_value(GISA_GAUGE(data))-1);
+	gisa_compass_set_value(GISA_COMPASS(data), gtk_range_get_value(GTK_RANGE(widget)));
 }

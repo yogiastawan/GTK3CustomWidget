@@ -177,7 +177,7 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             cairo_save(cr);
             cairo_select_font_face(cr, "monospace", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
             cairo_text_extents_t text_extents;
-            cairo_set_font_size(cr, size / 150);
+            cairo_set_font_size(cr, size / 15);
             cairo_text_extents(cr, lbl[i / 36], &text_extents);
             gdouble cx = (size / 2) + (((5 * size) / 12) * sin(i * 2.5 * G_PI / 180));
             gdouble cy = (size / 2) - (((5 * size) / 12) * cos(i * 2.5 * G_PI / 180));
@@ -200,6 +200,7 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             cairo_move_to(cr, (size / 2) + ((((size - 2) / 2) - size / 30) * sin(i * 2.5 * G_PI / 180)), (size / 2) - ((((size - 2) / 2) - size / 30) * cos(i * 2.5 * G_PI / 180)));
             cairo_line_to(cr, (size / 2) + ((((size - 2) / 3) + size / 30) * sin(i * 2.5 * G_PI / 180)), (size / 2) - ((((size - 2) / 3) + size / 30) * cos(i * 2.5 * G_PI / 180)));
             cairo_set_line_width(cr, 1);
+            cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
             gdouble abs = priv->value;
             if (priv->value < 0)
             {
@@ -209,12 +210,7 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             {
                 cairo_set_line_width(cr, 1.5);
                 cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
-            }
-            else
-            {
-                // g_print("Val: %f || deg: %f\n", priv->value, (double)i * 5);
-                cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
-            }
+            }            
             cairo_stroke(cr);
             cairo_restore(cr);
         }
@@ -225,6 +221,7 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             cairo_move_to(cr, (size / 2) + ((((size - 2) / 2) - size / 20) * sin(i * 2.5 * G_PI / 180)), (size / 2) - ((((size - 2) / 2) - size / 20) * cos(i * 2.5 * G_PI / 180)));
             cairo_line_to(cr, (size / 2) + ((((size - 2) / 3) + size / 20) * sin(i * 2.5 * G_PI / 180)), (size / 2) - ((((size - 2) / 3) + size / 20) * cos(i * 2.5 * G_PI / 180)));
             cairo_set_line_width(cr, 1);
+            cairo_set_source_rgba(cr, 0.5, 0.5, 0.5, 1);
             gdouble abs = priv->value;
             if (priv->value < 0)
             {
@@ -235,11 +232,6 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             {
                 cairo_set_line_width(cr, 1.5);
                 cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
-            }
-            else
-            {
-                // g_print("Val: %f || deg: %f\n", priv->value, (double)i * 5);
-                cairo_set_source_rgba(cr, 0.5, 0.5, 0.5, 1);
             }
             cairo_stroke(cr);
             cairo_restore(cr);

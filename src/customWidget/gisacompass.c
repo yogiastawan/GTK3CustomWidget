@@ -187,7 +187,6 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             cairo_move_to(cr, cx - ((text_extents.width / 2) + text_extents.x_bearing), cy - ((text_extents.height / 2) + text_extents.y_bearing));
             // cairo_show_text(cr, lbl[i / 36]);
             cairo_text_path(cr, lbl[i / 36]);
-            cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
             gdouble abs = priv->value;
             if (priv->value < 0)
             {
@@ -197,6 +196,10 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             if (abs == (double)i * 2.5)
             {
                 cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
+            }
+            else
+            {
+                cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
             }
             cairo_fill(cr);
             cairo_restore(cr);
@@ -212,8 +215,6 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             cairo_save(cr);
             cairo_move_to(cr, (size / 2) + ((((size - 2) / 2) - size / 30) * sin(i * 2.5 * G_PI / 180)), (size / 2) - ((((size - 2) / 2) - size / 30) * cos(i * 2.5 * G_PI / 180)));
             cairo_line_to(cr, (size / 2) + ((((size - 2) / 3) + size / 30) * sin(i * 2.5 * G_PI / 180)), (size / 2) - ((((size - 2) / 3) + size / 30) * cos(i * 2.5 * G_PI / 180)));
-            cairo_set_line_width(cr, 1);
-            cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
             gdouble abs = priv->value;
             if (priv->value < 0)
             {
@@ -223,7 +224,12 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             {
                 cairo_set_line_width(cr, 1.5);
                 cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
-            }            
+            }
+            else
+            {
+                cairo_set_line_width(cr, 1);
+                cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+            }
             cairo_stroke(cr);
             cairo_restore(cr);
         }
@@ -233,8 +239,6 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             cairo_save(cr);
             cairo_move_to(cr, (size / 2) + ((((size - 2) / 2) - size / 20) * sin(i * 2.5 * G_PI / 180)), (size / 2) - ((((size - 2) / 2) - size / 20) * cos(i * 2.5 * G_PI / 180)));
             cairo_line_to(cr, (size / 2) + ((((size - 2) / 3) + size / 20) * sin(i * 2.5 * G_PI / 180)), (size / 2) - ((((size - 2) / 3) + size / 20) * cos(i * 2.5 * G_PI / 180)));
-            cairo_set_line_width(cr, 1);
-            cairo_set_source_rgba(cr, 0.5, 0.5, 0.5, 1);
             gdouble abs = priv->value;
             if (priv->value < 0)
             {
@@ -246,6 +250,12 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
                 cairo_set_line_width(cr, 1.5);
                 cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
             }
+            else
+            {
+                cairo_set_line_width(cr, 1);
+                cairo_set_source_rgba(cr, 0.5, 0.5, 0.5, 1);
+            }
+
             cairo_stroke(cr);
             cairo_restore(cr);
         }
@@ -300,6 +310,28 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
         cairo_set_source_rgb(cr, 0.8, 0, 0.6);
     }
 
+    cairo_fill(cr);
+
+    //draw text value
+    cairo_text_extents_t extent;
+    char *val;
+    val = (char *)malloc(sizeof(char) * 6);
+    if (priv->value < 0)
+    {
+        snprintf(val, 7, "%.1f", priv->value);
+    }
+    else
+    {
+        snprintf(val, 6, "%.1f", priv->value);
+    }
+
+    cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_font_size(cr, 36);
+    cairo_text_extents(cr, val, &extent);
+    cairo_move_to(cr, (size / 2) - ((extent.width / 2) + extent.x_bearing), (size / 2) - ((extent.height / 2) + extent.y_bearing));
+    cairo_text_path(cr, val);
+    free(val);
+    cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
     cairo_fill(cr);
 
     return FALSE;

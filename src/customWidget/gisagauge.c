@@ -65,9 +65,9 @@ static void gisa_gauge_class_init(GisaGaugeClass *klass)
     pspec_minValue = g_param_spec_double("gisa-min-value", "MinValue", "Min value will hold", -G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_MIN_VALUE, pspec_minValue);
     // colorstyle = g_param_spec_boxed("gisa-gauge-color", "Color Gauge", "Gauge Color", gdk_rgba_get_type(), G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    colorstyle=g_param_spec_int("gisa-gauge-size","Gisa gauge size", "Just Test",0,100,10,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    colorstyle = g_param_spec_int("gisa-gauge-size", "Gisa gauge size", "Just Test", 0, 100, 10, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     gtk_widget_class_install_style_property(w_class, colorstyle);
-    gtk_widget_class_set_css_name(w_class,"gisa-gauge");
+    gtk_widget_class_set_css_name(w_class, "gisa-gauge");
 }
 
 static void gisa_gauge_init(GisaGauge *widget)
@@ -178,10 +178,6 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     {
         size = alloc.width;
     }
-    // GValue *a;
-    // gtk_widget_style_get_property(widget,"color-gauge",a);
-    // g_value_get
-    // g_print("linei: %s",);//2
     guint ro = (size - 2) / 2;
     guint ri = (size - 2) / 3;
     cairo_arc(cr, size / 2, size / 2, ro, 120 * G_PI / 180, 420 * G_PI / 180);
@@ -193,20 +189,32 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     // cairo_fill_preserve(cr);
     cairo_set_source_rgb(cr, 0, 0, 0);
     cairo_stroke(cr);
-    // value
-    // gdouble deg=((3*priv->value)+30)*G_PI/180;
+    //draw value
     if (priv->value > priv->minValue)
     {
-        // g_print("val: %f\n", priv->value);
-        cairo_arc(cr, size / 2, size / 2, ro - 2, 120 * G_PI / 180, ((300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue)) + 120) * G_PI / 180);
-        cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(((300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue)) + 30) * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(((300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue)) + 30) * G_PI / 180)), (ro - ri - 4) / 2, (120 + (300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue))) * G_PI / 180, (300 * (1 + ((priv->value-priv->minValue)/(priv->maxValue-priv->minValue)))) * G_PI / 180);
-        cairo_arc_negative(cr, size / 2, size / 2, ri + 2, ((300 * (priv->value-priv->minValue)/(priv->maxValue-priv->minValue)) + 120) * G_PI / 180, 120 * G_PI / 180);
+        cairo_arc(cr, size / 2, size / 2, ro - 2, 120 * G_PI / 180, ((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 120) * G_PI / 180);
+        cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 30) * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 30) * G_PI / 180)), (ro - ri - 4) / 2, (120 + (300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue))) * G_PI / 180, (300 * (1 + ((priv->value - priv->minValue) / (priv->maxValue - priv->minValue)))) * G_PI / 180);
+        cairo_arc_negative(cr, size / 2, size / 2, ri + 2, ((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 120) * G_PI / 180, 120 * G_PI / 180);
         cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(30 * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(30 * G_PI / 180)), (ro - ri - 4) / 2, 300 * G_PI / 180, 120 * G_PI / 180);
         cairo_close_path(cr);
         cairo_set_source_rgb(cr, 0, 0.6, 0.8);
-        cairo_fill_preserve(cr);
+        cairo_fill(cr);
         cairo_set_line_width(cr, 0);
     }
+
+    //draw text value
+    cairo_text_extents_t extent;
+    char *val;
+    val = (char *)malloc(sizeof(char) * 8);
+    sprintf(val, "%.1f", priv->value);
+    cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+    cairo_set_font_size(cr, 36 * size / 300);
+    cairo_text_extents(cr, val, &extent);
+    cairo_move_to(cr, (size / 2) - ((extent.width / 2) + extent.x_bearing), (size / 2) - ((extent.height / 2) + extent.y_bearing));
+    cairo_text_path(cr, val);
+    free(val);
+    cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+    cairo_fill(cr);
     return FALSE;
 }
 static void gisa_gauge_get_preferred_height(GtkWidget *widget, gint *minimum_height, gint *natural_height)

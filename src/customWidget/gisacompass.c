@@ -316,9 +316,9 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     cairo_text_extents_t extent;
     char *val;
     val = (char *)malloc(sizeof(char) * 8);
-    sprintf(val, "%.1f", priv->value);
+    sprintf(val, "%.1f\302\260", priv->value);
     cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    cairo_set_font_size(cr, 36 * size / 300);
+    cairo_set_font_size(cr, 35 * size / 300);
     cairo_text_extents(cr, val, &extent);
     cairo_move_to(cr, (size / 2) - ((extent.width / 2) + extent.x_bearing), (size / 2) - ((extent.height / 2) + extent.y_bearing));
     cairo_text_path(cr, val);

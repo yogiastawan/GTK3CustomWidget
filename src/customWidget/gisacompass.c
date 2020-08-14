@@ -288,8 +288,8 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     //draw triangle 1
     cairo_save(cr);
     cairo_move_to(cr, size / 2, (size + 4) / 6);
-    cairo_line_to(cr, (size / 2) - (sin(G_PI / 6) * size / 8), ((size + 4) / 6) + (cos(G_PI / 6) * size / 8));
-    cairo_line_to(cr, (size / 2) + (sin(G_PI / 6) * size / 8), ((size + 4) / 6) + (cos(G_PI / 6) * size / 8));
+    cairo_line_to(cr, (size / 2) - (sin(G_PI / 6) * size / 10), ((size + 4) / 6) + (cos(G_PI / 6) * size / 10));
+    cairo_line_to(cr, (size / 2) + (sin(G_PI / 6) * size / 10), ((size + 4) / 6) + (cos(G_PI / 6) * size / 10));
     cairo_close_path(cr);
     cairo_set_source_rgb(cr, 0, 0.6, 0.8);
     cairo_fill(cr);

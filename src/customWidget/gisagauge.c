@@ -38,8 +38,6 @@ static void gisa_gauge_class_init(GisaGaugeClass *klass)
     GObjectClass *g_class;
     GtkWidgetClass *w_class;
     GParamSpec *pspec;
-    GParamSpec *pspec_maxValue;
-    GParamSpec *pspec_minValue;
 
     GParamSpec *colorstyle;
 
@@ -60,12 +58,11 @@ static void gisa_gauge_class_init(GisaGaugeClass *klass)
     /* Install Property */
     pspec = g_param_spec_double("gisa-value", "Value", "Value will show", -G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_VALUE, pspec);
-    pspec_maxValue = g_param_spec_double("gisa-max-value", "MaxValue", "Max value will hold", -G_MINDOUBLE, G_MAXDOUBLE, 100.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    g_object_class_install_property(g_class, P_MAX_VALUE, pspec_maxValue);
-    pspec_minValue = g_param_spec_double("gisa-min-value", "MinValue", "Min value will hold", -G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    g_object_class_install_property(g_class, P_MIN_VALUE, pspec_minValue);
-    colorstyle = g_param_spec_boxed("value-color", "Value Color", "The color of value gauge", gdk_rgba_get_type(), G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-    // colorstyle = g_param_spec_int("size", "Gisa gauge size", "Just Test", 0, 100, 10, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    pspec = g_param_spec_double("gisa-max-value", "MaxValue", "Max value will hold", -G_MINDOUBLE, G_MAXDOUBLE, 100.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    g_object_class_install_property(g_class, P_MAX_VALUE, pspec);
+    pspec = g_param_spec_double("gisa-min-value", "MinValue", "Min value will hold", -G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    g_object_class_install_property(g_class, P_MIN_VALUE, pspec);
+    colorstyle = g_param_spec_boxed("value-color", "Value Color", "The color of value gauge", gdk_rgba_get_type(), G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);    
     gtk_widget_class_install_style_property(w_class, colorstyle);
     gtk_widget_class_set_css_name(w_class, "gisa-gauge");
 }
@@ -167,14 +164,7 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     guint size = 0;
     gtk_widget_get_allocation(widget, &alloc);
     GdkRGBA *val_color = NULL;
-    GValue a = G_VALUE_INIT;
-    g_value_init(&a, gdk_rgba_get_type());
-    gtk_widget_style_get_property(widget, "value-color", &a);
-    if (G_VALUE_HOLDS(&a,gdk_rgba_get_type()))
-    {
-        val_color = g_value_get_boxed(&a);
-        // g_print("color: %f\n", val_color->blue);
-    }
+    GValue styleVal = G_VALUE_INIT;
 
     if (alloc.height <= alloc.width)
     {
@@ -198,12 +188,18 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     //draw value
     if (priv->value > priv->minValue)
     {
+        g_value_init(&styleVal, gdk_rgba_get_type());
+        gtk_widget_style_get_property(widget, "value-color", &styleVal);
+        if (G_VALUE_HOLDS(&styleVal, gdk_rgba_get_type()))
+        {
+            val_color = g_value_get_boxed(&styleVal);
+        }
         cairo_arc(cr, size / 2, size / 2, ro - 2, 120 * G_PI / 180, ((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 120) * G_PI / 180);
         cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 30) * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 30) * G_PI / 180)), (ro - ri - 4) / 2, (120 + (300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue))) * G_PI / 180, (300 * (1 + ((priv->value - priv->minValue) / (priv->maxValue - priv->minValue)))) * G_PI / 180);
         cairo_arc_negative(cr, size / 2, size / 2, ri + 2, ((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 120) * G_PI / 180, 120 * G_PI / 180);
         cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(30 * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(30 * G_PI / 180)), (ro - ri - 4) / 2, 300 * G_PI / 180, 120 * G_PI / 180);
         cairo_close_path(cr);
-        gdk_cairo_set_source_rgba(cr,val_color);
+        gdk_cairo_set_source_rgba(cr, val_color);
         cairo_fill(cr);
         cairo_set_line_width(cr, 0);
     }

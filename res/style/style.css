@@ -1,3 +1,5 @@
 gisa-gauge{
-    -GisaGauge-value-color:rgb(23, 130, 172);    
+    /* -GisaGauge-value-color:rgb(23, 130, 172);  */
+    -GisaGauge-base-stroke-color:rgb(136, 9, 73);
+    -GisaGauge-base-fill-color:rgb(11, 94, 128);
 }

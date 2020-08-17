@@ -55,27 +55,29 @@ static void gisa_compass_class_init(GisaCompassClass *klass)
     g_object_class_install_property(g_class, P_VALUE, pspec);
 
     /* Install Style Property */
-    styleSpec=g_param_spec_boxed("base-fill-color", "Base Fill Color", "Fill color of base",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    styleSpec=g_param_spec_boxed("base-stroke-color", "Base stroke Color", "Stroke color of base",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    styleSpec=g_param_spec_boxed("tick-normal-color", "Tick Normal Color", "Color of tick normal",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    styleSpec=g_param_spec_boxed("tick-big-color", "Tick Big Color", "Color of tick big",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    styleSpec=g_param_spec_boxed("tick-char-color", "Tick Char Color", "Color of tick char",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    styleSpec=g_param_spec_boxed("tick-highlight-color", "Tick Highlight Color", "Color of tick when highlight",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    styleSpec=g_param_spec_boxed("north-indicator-color", "North Indicator Color", "Color of north indicator",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    styleSpec=g_param_spec_boxed("direction-indicator-color", "Direction Indicator Color", "Color of direction indicator",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    styleSpec=g_param_spec_boxed("direction-indicator-highlight-color", "Direction Indicator Highlight Color", "Color of direction indicator when degree value not 0",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    styleSpec=g_param_spec_boxed("value-text-color", "Value Text Color", "Color of text value",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
-    gtk_widget_class_install_style_property(w_class,styleSpec);
-    gtk_widget_class_set_css_name(w_class,"gisa-compass");
+    styleSpec = g_param_spec_boxed("base-fill-color", "Base Fill Color", "Fill color of base", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("base-stroke-color", "Base stroke Color", "Stroke color of base", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("tick-normal-color", "Tick Normal Color", "Color of tick normal", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("tick-big-color", "Tick Big Color", "Color of tick big", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("tick-char-color", "Tick Char Color", "Color of tick char", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("tick-highlight-color", "Tick Highlight Color", "Color of tick when highlight", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("delta-curve-color", "Delta Curve Color", "Color of curve delta", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("north-indicator-color", "North Indicator Color", "Color of north indicator", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("direction-indicator-color", "Direction Indicator Color", "Color of direction indicator", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("direction-indicator-highlight-color", "Direction Indicator Highlight Color", "Color of direction indicator when degree value not 0", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    styleSpec = g_param_spec_boxed("value-text-color", "Value Text Color", "Color of text value", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, styleSpec);
+    gtk_widget_class_set_css_name(w_class, "gisa-compass");
 }
 
 static void gisa_compass_init(GisaCompass *widget)
@@ -175,6 +177,9 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
         priv->value = 0;
     }
 
+    GdkRGBA *color;
+    GValue style = G_VALUE_INIT;
+
     cairo_save(cr);
     //transform rotate
     cairo_translate(cr, size / 2, size / 2);
@@ -185,13 +190,70 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     cairo_arc(cr, size / 2, size / 2, (size - 2) / 2, 0, 2 * G_PI);
     cairo_move_to(cr, (size / 2) + ((size - 2) / 3), size / 2);
     cairo_arc(cr, size / 2, size / 2, (size - 2) / 3, 0, 2 * G_PI);
-    cairo_set_source_rgba(cr, 1, 1, 1, 1);
+    g_value_init(&style, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "base-fill-color", &style);
+    if (G_VALUE_HOLDS(&style, GDK_TYPE_RGBA))
+    {
+        color = g_value_get_boxed(&style);
+    }
+    if (color != NULL)
+    {
+        gdk_cairo_set_source_rgba(cr, color);
+    }
+    else
+    {
+        cairo_set_source_rgba(cr, 1, 1, 1, 1);
+    }
     cairo_set_fill_rule(cr, CAIRO_FILL_RULE_EVEN_ODD);
     cairo_fill_preserve(cr);
-    cairo_set_source_rgba(cr, 0, 0, 0, 1);
+    g_value_unset(&style);
+    g_value_init(&style, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "base-stroke-color", &style);
+    if (G_VALUE_HOLDS(&style, GDK_TYPE_RGBA))
+    {
+        color = g_value_get_boxed(&style);
+    }
+    if (color != NULL)
+    {
+        gdk_cairo_set_source_rgba(cr, color);
+    }
+    else
+    {
+        cairo_set_source_rgba(cr, 0, 0, 0, 1);
+    }
     cairo_stroke(cr);
     cairo_restore(cr);
     //draw tick
+    GValue tickNormal = G_VALUE_INIT;
+    GValue tickBig = G_VALUE_INIT;
+    GValue tickHighlight = G_VALUE_INIT;
+    GdkRGBA *colorNormal = NULL, *colorBig = NULL, *colorHigh = NULL;
+    //get color style
+    g_value_unset(&style);
+    g_value_init(&style, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "tick-char-color", &style);
+    if (G_VALUE_HOLDS(&style, GDK_TYPE_RGBA))
+    {
+        color = g_value_get_boxed(&style);
+    }
+    g_value_init(&tickNormal, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "tick-normal-color", &tickNormal);
+    if (G_VALUE_HOLDS(&tickNormal, GDK_TYPE_RGBA))
+    {
+        colorNormal = g_value_get_boxed(&tickNormal);
+    }
+    g_value_init(&tickBig, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "tick-big-color", &tickBig);
+    if (G_VALUE_HOLDS(&tickBig, GDK_TYPE_RGBA))
+    {
+        colorBig = g_value_get_boxed(&tickBig);
+    }
+    g_value_init(&tickHighlight, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "tick-highlight-color", &tickHighlight);
+    if (G_VALUE_HOLDS(&tickNormal, GDK_TYPE_RGBA))
+    {
+        colorHigh = g_value_get_boxed(&tickHighlight);
+    }
     gint16 i;
     for (i = 0; i < 144; i++)
     {
@@ -218,11 +280,25 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
 
             if (abs == (double)i * 2.5)
             {
-                cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
+                if (colorHigh != NULL)
+                {
+                    gdk_cairo_set_source_rgba(cr, colorHigh);
+                }
+                else
+                {
+                    cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
+                }
             }
             else
             {
-                cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+                if (color != NULL)
+                {
+                    gdk_cairo_set_source_rgba(cr, color);
+                }
+                else
+                {
+                    cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+                }
             }
             cairo_fill(cr);
             cairo_restore(cr);
@@ -246,12 +322,26 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             if (abs == (double)i * 2.5)
             {
                 cairo_set_line_width(cr, 1.5);
-                cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
+                if (colorHigh != NULL)
+                {
+                    gdk_cairo_set_source_rgba(cr, colorHigh);
+                }
+                else
+                {
+                    cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
+                }
             }
             else
             {
                 cairo_set_line_width(cr, 1);
-                cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+                if (colorBig != NULL)
+                {
+                    gdk_cairo_set_source_rgba(cr, colorBig);
+                }
+                else
+                {
+                    cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+                }
             }
             cairo_stroke(cr);
             cairo_restore(cr);
@@ -271,12 +361,26 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             if (abs == (double)i * 2.5)
             {
                 cairo_set_line_width(cr, 1.5);
-                cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
+                if (colorHigh != NULL)
+                {
+                    gdk_cairo_set_source_rgba(cr, colorHigh);
+                }
+                else
+                {
+                    cairo_set_source_rgba(cr, 0.9, 0.5, 0, 1);
+                }
             }
             else
             {
                 cairo_set_line_width(cr, 1);
-                cairo_set_source_rgba(cr, 0.5, 0.5, 0.5, 1);
+                if (colorNormal != NULL)
+                {
+                    gdk_cairo_set_source_rgba(cr, colorNormal);
+                }
+                else
+                {
+                    cairo_set_source_rgba(cr, 0.5, 0.5, 0.5, 1);
+                }
             }
 
             cairo_stroke(cr);
@@ -303,20 +407,48 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
             cairo_arc(cr, size / 2, size / 2, (size - 2) / 3, 3 * G_PI / 2, (priv->value + 270) * G_PI / 180);
         }
         cairo_set_line_width(cr, 1.5);
-        cairo_set_source_rgba(cr, 0.9, 0, 0.5, 1);
+        g_value_unset(&style);
+        g_value_init(&style, GDK_TYPE_RGBA);
+        gtk_widget_style_get_property(widget, "delta-curve-color", &style);
+        if (G_VALUE_HOLDS(&style, GDK_TYPE_RGBA))
+        {
+            color = g_value_get_boxed(&style);
+        }
+        if (color != NULL)
+        {
+            gdk_cairo_set_source_rgba(cr, color);
+        }
+        else
+        {
+            cairo_set_source_rgba(cr, 0.9, 0, 0.5, 1);
+        }
         cairo_stroke(cr);
         cairo_restore(cr);
-    }
 
-    //draw triangle 1
-    cairo_save(cr);
-    cairo_move_to(cr, size / 2, (size + 4) / 6);
-    cairo_line_to(cr, (size / 2) - (sin(G_PI / 6) * size / 10), ((size + 4) / 6) + (cos(G_PI / 6) * size / 10));
-    cairo_line_to(cr, (size / 2) + (sin(G_PI / 6) * size / 10), ((size + 4) / 6) + (cos(G_PI / 6) * size / 10));
-    cairo_close_path(cr);
-    cairo_set_source_rgb(cr, 0, 0.6, 0.8);
-    cairo_fill(cr);
-    cairo_restore(cr);
+        //draw triangle 1
+        cairo_save(cr);
+        cairo_move_to(cr, size / 2, (size + 4) / 6);
+        cairo_line_to(cr, (size / 2) - (sin(G_PI / 6) * size / 10), ((size + 4) / 6) + (cos(G_PI / 6) * size / 10));
+        cairo_line_to(cr, (size / 2) + (sin(G_PI / 6) * size / 10), ((size + 4) / 6) + (cos(G_PI / 6) * size / 10));
+        cairo_close_path(cr);
+        g_value_unset(&style);
+        g_value_init(&style, GDK_TYPE_RGBA);
+        gtk_widget_style_get_property(widget, "north-indicator-color", &style);
+        if (G_VALUE_HOLDS(&style, GDK_TYPE_RGBA))
+        {
+            color = g_value_get_boxed(&style);
+        }
+        if (color != NULL)
+        {
+            gdk_cairo_set_source_rgba(cr, color);
+        }
+        else
+        {
+            cairo_set_source_rgb(cr, 0, 0.6, 0.8);
+        }
+        cairo_fill(cr);
+        cairo_restore(cr);
+    }
 
     cairo_restore(cr);
     //draw triangle;
@@ -326,11 +458,39 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     cairo_close_path(cr);
     if (priv->value == 0)
     {
-        cairo_set_source_rgb(cr, 0, 0.6, 0.8);
+        g_value_unset(&style);
+        g_value_init(&style, GDK_TYPE_RGBA);
+        gtk_widget_style_get_property(widget, "direction-indicator-color", &style);
+        if (G_VALUE_HOLDS(&style, GDK_TYPE_RGBA))
+        {
+            color = g_value_get_boxed(&style);
+        }
+        if (color != NULL)
+        {
+            gdk_cairo_set_source_rgba(cr, color);
+        }
+        else
+        {
+            cairo_set_source_rgb(cr, 0, 0.6, 0.8);
+        }
     }
     else
     {
-        cairo_set_source_rgb(cr, 0.8, 0, 0.6);
+        g_value_unset(&style);
+        g_value_init(&style, GDK_TYPE_RGBA);
+        gtk_widget_style_get_property(widget, "direction-indicator-highlight-color", &style);
+        if (G_VALUE_HOLDS(&style, GDK_TYPE_RGBA))
+        {
+            color = g_value_get_boxed(&style);
+        }
+        if (color != NULL)
+        {
+            gdk_cairo_set_source_rgba(cr, color);
+        }
+        else
+        {
+            cairo_set_source_rgb(cr, 0.8, 0, 0.6);
+        }
     }
 
     cairo_fill(cr);
@@ -346,7 +506,21 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     cairo_move_to(cr, (size / 2) - ((extent.width / 2) + extent.x_bearing), (size / 2) - ((extent.height / 2) + extent.y_bearing));
     cairo_text_path(cr, val);
     free(val);
-    cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+    g_value_unset(&style);
+    g_value_init(&style, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "value-text-color", &style);
+    if (G_VALUE_HOLDS(&style, GDK_TYPE_RGBA))
+    {
+        color = g_value_get_boxed(&style);
+    }
+    if (color != NULL)
+    {
+        gdk_cairo_set_source_rgba(cr, color);
+    }
+    else
+    {
+        cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+    }
     cairo_fill(cr);
 
     return FALSE;

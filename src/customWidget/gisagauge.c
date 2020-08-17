@@ -68,6 +68,8 @@ static void gisa_gauge_class_init(GisaGaugeClass *klass)
     gtk_widget_class_install_style_property(w_class, colorstyle);
     colorstyle = g_param_spec_boxed("base-stroke-color", "Base Stroke Color", "Stroke color of base", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     gtk_widget_class_install_style_property(w_class, colorstyle);
+    colorstyle = g_param_spec_boxed("value-text-color", "Value text Color", "Text color of value", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, colorstyle);
     gtk_widget_class_set_css_name(w_class, "gisa-gauge");
 }
 
@@ -260,7 +262,22 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     cairo_move_to(cr, (size / 2) - ((extent.width / 2) + extent.x_bearing), (size / 2) - ((extent.height / 2) + extent.y_bearing));
     cairo_text_path(cr, val);
     free(val);
-    cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+    g_value_unset(&styleVal);
+    g_value_init(&styleVal, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "value-text-color", &styleVal);
+    if (G_VALUE_HOLDS(&styleVal, GDK_TYPE_RGBA))
+    {
+        val_color = g_value_get_boxed(&styleVal);
+    }
+
+    if (val_color != NULL)
+    {
+        gdk_cairo_set_source_rgba(cr, val_color);
+    }
+    else
+    {
+        cairo_set_source_rgba(cr, 0.3, 0.3, 0.3, 1);
+    }
     cairo_fill(cr);
     return FALSE;
 }

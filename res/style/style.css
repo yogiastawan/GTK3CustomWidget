@@ -1,6 +1,21 @@
 gisa-gauge{
-    -GisaGauge-value-color:rgb(23, 130, 172); 
+    -GisaGauge-value-color:rgb(0, 84, 87);
     -GisaGauge-base-stroke-color:rgb(6, 83, 102);
-    -GisaGauge-base-fill-color:rgb(255, 255, 255);
+    -GisaGauge-base-fill-color:rgb(96, 223, 228);
     -GisaGauge-value-text-color: rgb(46, 54, 61);
+}
+
+gisa-compass{
+    -GisaCompass-base-fill-color :rgb(174, 198, 201);
+    -GisaCompass-base-stroke-color: rgb(6, 83, 102);
+    -GisaCompass-tick-normal-color: rgb(67, 67, 73);
+    -GisaCompass-tick-big-color: rgb(22, 22, 22);
+    -GisaCompass-tick-char-color: rgb(7, 70, 187);
+    -GisaCompass-tick-highlight-color: rgb(201, 0, 84);
+    -GisaCompass-delta-curve-color: rgb(201, 0, 84);
+    -GisaCompass-north-indicator-color: rgb(6, 83, 102);
+    -GisaCompass-direction-indicator-color: rgb(6, 73, 90);
+    -GisaCompass-direction-indicator-highlight-color: rgb(201, 0, 84);
+    -GisaCompass-value-text-color: rgb(6, 73, 90);
+
 }

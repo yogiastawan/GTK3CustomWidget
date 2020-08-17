@@ -62,7 +62,11 @@ static void gisa_gauge_class_init(GisaGaugeClass *klass)
     g_object_class_install_property(g_class, P_MAX_VALUE, pspec);
     pspec = g_param_spec_double("gisa-min-value", "MinValue", "Min value will hold", -G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property(g_class, P_MIN_VALUE, pspec);
-    colorstyle = g_param_spec_boxed("value-color", "Value Color", "The color of value gauge", gdk_rgba_get_type(), G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);    
+    colorstyle = g_param_spec_boxed("value-color", "Value Color", "The color of value gauge", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, colorstyle);
+    colorstyle = g_param_spec_boxed("base-fill-color", "Base Fill Color", "Fill color of base", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class, colorstyle);
+    colorstyle = g_param_spec_boxed("base-stroke-color", "Base Stroke Color", "Stroke color of base", GDK_TYPE_RGBA, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     gtk_widget_class_install_style_property(w_class, colorstyle);
     gtk_widget_class_set_css_name(w_class, "gisa-gauge");
 }
@@ -181,16 +185,49 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     cairo_arc_negative(cr, size / 2, size / 2, ri, 60 * G_PI / 180, 120 * G_PI / 180);
     cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(30 * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(30 * G_PI / 180)), (ro - ri) / 2, 300 * G_PI / 180, 120 * G_PI / 180);
     cairo_close_path(cr);
-    // cairo_set_source_rgb(cr,0,0.6,0.8);
-    // cairo_fill_preserve(cr);
-    cairo_set_source_rgb(cr, 0, 0, 0);
+    //fill
+    g_value_init(&styleVal, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "base-fill-color", &styleVal);
+    if (G_VALUE_HOLDS(&styleVal, GDK_TYPE_RGBA))
+    {
+        val_color = g_value_get_boxed(&styleVal);
+    }
+
+    if (val_color != NULL)
+    {
+        gdk_cairo_set_source_rgba(cr, val_color);
+    }
+    else
+    {
+        cairo_set_source_rgba(cr, 1, 1, 1, 1);
+    }
+    cairo_fill_preserve(cr);
+    // stroke
+    g_value_unset(&styleVal);
+    g_value_init(&styleVal, GDK_TYPE_RGBA);
+    gtk_widget_style_get_property(widget, "base-stroke-color", &styleVal);
+    if (G_VALUE_HOLDS(&styleVal, GDK_TYPE_RGBA))
+    {
+        val_color = g_value_get_boxed(&styleVal);
+    }
+
+    if (val_color != NULL)
+    {
+        gdk_cairo_set_source_rgba(cr, val_color);
+    }
+    else
+    {
+        cairo_set_source_rgba(cr, 0, 0, 0, 1);
+    }
     cairo_stroke(cr);
+
     //draw value
     if (priv->value > priv->minValue)
     {
-        g_value_init(&styleVal, gdk_rgba_get_type());
+        g_value_unset(&styleVal);
+        g_value_init(&styleVal, GDK_TYPE_RGBA);
         gtk_widget_style_get_property(widget, "value-color", &styleVal);
-        if (G_VALUE_HOLDS(&styleVal, gdk_rgba_get_type()))
+        if (G_VALUE_HOLDS(&styleVal, GDK_TYPE_RGBA))
         {
             val_color = g_value_get_boxed(&styleVal);
         }
@@ -199,7 +236,15 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
         cairo_arc_negative(cr, size / 2, size / 2, ri + 2, ((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 120) * G_PI / 180, 120 * G_PI / 180);
         cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(30 * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(30 * G_PI / 180)), (ro - ri - 4) / 2, 300 * G_PI / 180, 120 * G_PI / 180);
         cairo_close_path(cr);
-        gdk_cairo_set_source_rgba(cr, val_color);
+        //fill
+        if (val_color != NULL)
+        {
+            gdk_cairo_set_source_rgba(cr, val_color);
+        }
+        else
+        {
+            cairo_set_source_rgba(cr, 0, 0.6, 0.8, 1);
+        }
         cairo_fill(cr);
         cairo_set_line_width(cr, 0);
     }

@@ -34,6 +34,7 @@ static void gisa_compass_class_init(GisaCompassClass *klass)
     GObjectClass *g_class;
     GtkWidgetClass *w_class;
     GParamSpec *pspec;
+    GParamSpec *styleSpec;
 
     g_class = G_OBJECT_CLASS(klass);
     /* Override widget class methods */
@@ -51,8 +52,30 @@ static void gisa_compass_class_init(GisaCompassClass *klass)
 
     /* Install Property */
     pspec = g_param_spec_double("value", "Value", "Value will show", -360, 360, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
     g_object_class_install_property(g_class, P_VALUE, pspec);
+
+    /* Install Style Property */
+    styleSpec=g_param_spec_boxed("base-fill-color", "Base Fill Color", "Fill color of base",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    styleSpec=g_param_spec_boxed("base-stroke-color", "Base stroke Color", "Stroke color of base",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    styleSpec=g_param_spec_boxed("tick-normal-color", "Tick Normal Color", "Color of tick normal",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    styleSpec=g_param_spec_boxed("tick-big-color", "Tick Big Color", "Color of tick big",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    styleSpec=g_param_spec_boxed("tick-char-color", "Tick Char Color", "Color of tick char",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    styleSpec=g_param_spec_boxed("tick-highlight-color", "Tick Highlight Color", "Color of tick when highlight",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    styleSpec=g_param_spec_boxed("north-indicator-color", "North Indicator Color", "Color of north indicator",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    styleSpec=g_param_spec_boxed("direction-indicator-color", "Direction Indicator Color", "Color of direction indicator",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    styleSpec=g_param_spec_boxed("direction-indicator-highlight-color", "Direction Indicator Highlight Color", "Color of direction indicator when degree value not 0",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    styleSpec=g_param_spec_boxed("value-text-color", "Value Text Color", "Color of text value",GDK_TYPE_RGBA,G_PARAM_READABLE|G_PARAM_STATIC_STRINGS);
+    gtk_widget_class_install_style_property(w_class,styleSpec);
+    gtk_widget_class_set_css_name(w_class,"gisa-compass");
 }
 
 static void gisa_compass_init(GisaCompass *widget)

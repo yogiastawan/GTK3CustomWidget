@@ -57,9 +57,10 @@ void main_ui(GtkApplication *app, gpointer *user_data)
 	//style
 	GtkCssProvider *provider = gtk_css_provider_new();
 	gtk_css_provider_load_from_path(provider, "/home/yogiastawan/Programming/C/GTK3CustomWidget/res/style/style.css", NULL);
-	GtkStyleContext *ctx;
-	ctx = gtk_widget_get_style_context(myGauge);
-	gtk_style_context_add_provider(ctx, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	// GtkStyleContext *ctx;
+	// ctx = gtk_widget_get_style_context(myGauge);
+	gtk_style_context_add_provider_for_screen(gtk_window_get_screen(GTK_WINDOW(window)),GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	// gtk_style_context_add_provider(ctx, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
 	gtk_widget_show_all(window);
 }

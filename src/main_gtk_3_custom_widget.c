@@ -2,6 +2,7 @@
 
 #include "./customWidget/gisagauge.h"
 #include "./customWidget/gisacompass.h"
+#include "./customWidget/gisaswitch.h"
 
 void gaugeTest(GtkWidget *widget, gpointer *data);
 void compassTest(GtkWidget *widget, gpointer *data);
@@ -28,6 +29,7 @@ void main_ui(GtkApplication *app, gpointer *user_data)
 	GtkWidget *slider1, *slider2, *slider_box, *box, *boxh;
 	GtkWidget *myGauge;
 	GtkWidget *myCompass;
+	GtkWidget *mySwitch;
 
 	slider_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
@@ -37,6 +39,7 @@ void main_ui(GtkApplication *app, gpointer *user_data)
 
 	myGauge = gisa_gauge_new();
 	myCompass = gisa_compass_new();
+	mySwitch=gisa_switch_new();
 	gtk_box_pack_start(GTK_BOX(box), boxh, TRUE, TRUE, 0);
 
 	GtkAdjustment *scale1Adj = gtk_adjustment_new(0, 0, 100, 1, 5, 0);
@@ -52,6 +55,7 @@ void main_ui(GtkApplication *app, gpointer *user_data)
 
 	gtk_box_pack_start(GTK_BOX(boxh), myGauge, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(boxh), myCompass, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(boxh),mySwitch,FALSE,TRUE,0);
 	gtk_box_pack_start(GTK_BOX(box), slider_box, TRUE, TRUE, 0);
 
 	//style

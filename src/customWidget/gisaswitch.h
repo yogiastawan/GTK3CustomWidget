@@ -25,6 +25,8 @@
         GtkWidget parent;
         /*< Private >*/
         GisaSwitchPrivate *priv;
+
+        guint8 button;
     };
     
     struct _GisaSwitchClass

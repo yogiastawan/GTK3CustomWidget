@@ -206,7 +206,7 @@ void gisa_switch_set_value(GisaSwitch *widget, gdouble value)
 gboolean gisa_switch_button_press(GtkWidget *widget, GdkEventButton *event)
 {
     g_return_val_if_fail(GISA_IS_SWITCH(widget), FALSE);
-    g_return_val_if_fail(event!=NULL,FALSE);
+    g_return_val_if_fail(event != NULL, FALSE);
 
     if (!GISA_SWITCH(widget)->button)
     {
@@ -221,7 +221,7 @@ gboolean gisa_switch_button_press(GtkWidget *widget, GdkEventButton *event)
 static gboolean gisa_switch_button_release(GtkWidget *widget, GdkEventButton *event)
 {
     g_return_val_if_fail(GISA_IS_SWITCH(widget), FALSE);
-    g_return_val_if_fail(event!=NULL,FALSE);
+    g_return_val_if_fail(event != NULL, FALSE);
     if (GISA_SWITCH(widget)->button == event->button)
     {
         gtk_grab_remove(widget);

@@ -162,16 +162,7 @@ static gboolean gisa_compass_draw(GtkWidget *widget, cairo_t *cr)
     GtkAllocation alloc;
     gtk_widget_get_allocation(widget, &alloc);
     char *lbl[] = {"N", "E", "S", "W"};
-    guint size;
-    if (alloc.width <= alloc.height)
-    {
-        size = alloc.width;
-    }
-    else
-    {
-        size = alloc.height;
-    }
-
+    guint size=(alloc.width<=alloc.height)*alloc.width+(alloc.width>alloc.height)*alloc.height;
     if (priv->value == -360 || priv->value == 360)
     {
         priv->value = 0;

@@ -167,19 +167,10 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
 {
     GisaGaugePrivate *priv = GISA_GAUGE(widget)->priv;
     GtkAllocation alloc;
-    guint size = 0;
     gtk_widget_get_allocation(widget, &alloc);
     GdkRGBA *val_color = NULL;
     GValue styleVal = G_VALUE_INIT;
-
-    if (alloc.height <= alloc.width)
-    {
-        size = alloc.height;
-    }
-    else
-    {
-        size = alloc.width;
-    }
+    guint size=(alloc.width<=alloc.height)*alloc.width+(alloc.width>alloc.height)*alloc.height;    
     guint ro = (size - 2) / 2;
     guint ri = (size - 2) / 3;
     cairo_arc(cr, size / 2, size / 2, ro, 120 * G_PI / 180, 420 * G_PI / 180);

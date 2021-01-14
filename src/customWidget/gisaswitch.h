@@ -7,6 +7,9 @@
     
     G_BEGIN_DECLS
     
+    typedef gboolean switchValue;
+    #define ON TRUE
+    #define OFF FALSE
     /* Standart GObject macros */
     #define GISA_TYPE_SWITCH (gisa_switch_get_type())
     #define GISA_SWITCH(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),GISA_TYPE_SWITCH, GisaSwitch))
@@ -24,9 +27,7 @@
     {
         GtkWidget parent;
         /*< Private >*/
-        GisaSwitchPrivate *priv;
-
-        guint8 button;
+        GisaSwitchPrivate *priv;        
     };
     
     struct _GisaSwitchClass
@@ -39,9 +40,9 @@
     GtkWidget *gisa_switch_new(void);
     
     //set value widget
-    void gisa_switch_set_value(GisaSwitch *widget, gdouble value);
+    void gisa_switch_set_value(GisaSwitch *widget, switchValue value);
     //get value widget
-    gdouble gisa_switch_get_value(GisaSwitch *widget);
+    switchValue gisa_switch_get_value(GisaSwitch *widget);
     
     G_END_DECLS
     

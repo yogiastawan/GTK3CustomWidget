@@ -1,4 +1,5 @@
 #include "gisaswitch.h"
+#include <math.h>
 
 #define GISA_RADIUS (size / 10)
 
@@ -12,7 +13,8 @@ enum
 /* Private data structure */
 struct _GisaSwitchPrivate
 {
-    gdouble value;
+    switchValue value;
+    guint8 button;
     GdkWindow *window;
 };
 
@@ -71,11 +73,11 @@ static void gisa_switch_init(GisaSwitch *widget)
     gtk_widget_set_has_window(GTK_WIDGET(widget), TRUE);
 
     //set default value
-    priv->value = 0;
+    priv->value = OFF;
+    priv->button = 0;
 
     //create cache for faster access
     widget->priv = priv;
-    widget->button = 0;
 }
 
 /* Override Methods */
@@ -145,15 +147,14 @@ static gboolean gisa_switch_draw(GtkWidget *widget, cairo_t *cr)
     GisaSwitchPrivate *priv = GISA_SWITCH(widget)->priv;
     GtkAllocation alloc;
     gtk_widget_get_allocation(widget, &alloc);
-    guint size = 0 * priv->value;
-    if (alloc.height <= alloc.width)
-    {
-        size = alloc.height;
-    }
-    else
-    {
-        size = alloc.width;
-    }
+    //branchless
+    guint size = (alloc.height <= alloc.width) * alloc.height + (alloc.height > alloc.width) * alloc.width;
+
+    gdouble iconOutterRadius = size * 3 / 8;
+    gdouble iconInnerRadius = size / 4;
+    gdouble iconThick = size / 8;                   // (size * 3 / 8) - (size / 4);
+    gdouble littleArcPosFromCenter = 5 * size / 16; //(size/2)-((size/2)-(3*size/8))-(iconThick/2);
+
     //draw border
     guint radius = size / 10;
     cairo_arc(cr, GISA_RADIUS + 1, GISA_RADIUS + 1, GISA_RADIUS, 180 * G_PI / 180, 270 * G_PI / 180);
@@ -161,27 +162,58 @@ static gboolean gisa_switch_draw(GtkWidget *widget, cairo_t *cr)
     cairo_arc(cr, size - (GISA_RADIUS + 1), size - (GISA_RADIUS + 1), GISA_RADIUS, 0, 90 * G_PI / 180);
     cairo_arc(cr, GISA_RADIUS + 1, size - (GISA_RADIUS + 1), radius, 90 * G_PI / 180, 180 * G_PI / 180);
     cairo_close_path(cr);
-    cairo_set_source_rgb(cr, 0, 0, 1);
+    if (priv->value == ON)
+    {
+        cairo_set_source_rgb(cr, 0, 0, 1); //on->blue
+    }
+    else
+    {
+        cairo_set_source_rgb(cr, 1, 0, 0); //off->red
+    }    
     cairo_stroke(cr);
-    //draw icon
-    cairo_arc(cr, size / 2, size / 2, size * 3 / 8, 0, 2 * G_PI);
-    //draw sub arc
-    cairo_arc(cr, size / 2, size / 2, size * 1 / 4, 0, 2 * G_PI);
-    cairo_set_source_rgb(cr, 0, 0, 1);
+    //draw icon arc
+    cairo_arc(cr, size / 2, size / 2, iconOutterRadius, G_PI / -3, 4 * G_PI / 3);
+    cairo_arc(cr, (size / 2) + (littleArcPosFromCenter * cos(4 * G_PI / 3)), (size / 2) + (littleArcPosFromCenter * sin(4 * G_PI / 3)), iconThick / 2, 4 * G_PI / 3, G_PI / 3);
+    cairo_arc_negative(cr, size / 2, size / 2, iconInnerRadius, 4 * G_PI / 3, 5 * G_PI / 3);
+    cairo_arc(cr, (size / 2) + (littleArcPosFromCenter * cos(5 * G_PI / 3)), (size / 2) + (littleArcPosFromCenter * sin(5 * G_PI / 3)), iconThick / 2, 2 * G_PI / 3, G_PI / -3);
+    if (priv->value == ON)
+    {
+        cairo_set_source_rgb(cr, 0, 0, 1); //on->blue
+    }
+    else
+    {
+        cairo_set_source_rgb(cr, 1, 0, 0); //off->red
+    }
+    cairo_fill(cr);
+    cairo_stroke(cr);
+    //draw bar
+    cairo_arc(cr, size / 2, size / 8, iconThick / 2, G_PI, 2 * G_PI);
+    cairo_line_to(cr, (size / 2) + (iconThick / 2), (size / 2) - (size / 8));
+    cairo_arc(cr, size / 2, (size / 2) - (size / 8), iconThick / 2, 0, G_PI);
+    cairo_line_to(cr, (size / 2) - (iconThick / 2), size / 8);
+    if (priv->value == ON)
+    {
+        cairo_set_source_rgb(cr, 0, 0, 1); //on->blue
+    }
+    else
+    {
+        cairo_set_source_rgb(cr, 1, 0, 0); //off->red
+    }
+    cairo_fill(cr);
     cairo_stroke(cr);
     return FALSE;
 }
 static void gisa_switch_get_preferred_height(GtkWidget *widget, gint *minimum_height, gint *natural_height)
 {
     (void)widget;
-    *minimum_height = 90;
-    *natural_height = 120;
+    *minimum_height = 120;
+    *natural_height = 300;
 }
 static void gisa_switch_get_preferred_width(GtkWidget *widget, gint *minimum_width, gint *natural_width)
 {
     (void)widget;
-    *minimum_width = 90;
-    *natural_width = 120;
+    *minimum_width = 120;
+    *natural_width = 300;
 }
 
 /* Public API */
@@ -190,29 +222,34 @@ GtkWidget *gisa_switch_new(void)
     return (g_object_new(GISA_TYPE_SWITCH, NULL));
 }
 
-gdouble gisa_switch_get_value(GisaSwitch *widget)
+switchValue gisa_switch_get_value(GisaSwitch *widget)
 {
     g_return_val_if_fail(GISA_IS_SWITCH(widget), 0);
     return (widget->priv->value);
 }
 
-void gisa_switch_set_value(GisaSwitch *widget, gdouble value)
+void gisa_switch_set_value(GisaSwitch *widget, switchValue value)
 {
     g_return_if_fail(GISA_IS_SWITCH(widget));
     widget->priv->value = value;
     gtk_widget_queue_draw(GTK_WIDGET(widget));
 }
 
-gboolean gisa_switch_button_press(GtkWidget *widget, GdkEventButton *event)
+static gboolean gisa_switch_button_press(GtkWidget *widget, GdkEventButton *event)
 {
     g_return_val_if_fail(GISA_IS_SWITCH(widget), FALSE);
     g_return_val_if_fail(event != NULL, FALSE);
 
-    if (!GISA_SWITCH(widget)->button)
+    GtkAllocation alloc;
+    gtk_widget_get_allocation(widget, &alloc);
+
+    guint size = (alloc.height <= alloc.width) * alloc.height + (alloc.height > alloc.width) * alloc.width;
+
+    if (!GISA_SWITCH(widget)->priv->button && event->x < size && event->y < size)
     {
         gtk_grab_add(widget);
-        GISA_SWITCH(widget)->button = event->button;
-        g_print("event: %d || GisaSwitch: %d", event->button, GISA_SWITCH(widget)->button);
+        GISA_SWITCH(widget)->priv->button = event->button;
+        // g_print("event: %d || GisaSwitch: %d", event->button, GISA_SWITCH(widget)->button);
     }
 
     return FALSE;
@@ -222,11 +259,13 @@ static gboolean gisa_switch_button_release(GtkWidget *widget, GdkEventButton *ev
 {
     g_return_val_if_fail(GISA_IS_SWITCH(widget), FALSE);
     g_return_val_if_fail(event != NULL, FALSE);
-    if (GISA_SWITCH(widget)->button == event->button)
+    if (GISA_SWITCH(widget)->priv->button == 1) //1->left click, 3->rigth click
     {
         gtk_grab_remove(widget);
+        GISA_SWITCH(widget)->priv->value = !GISA_SWITCH(widget)->priv->value;
+        gtk_widget_queue_draw(widget);
         g_print("Button released");
-        GISA_SWITCH(widget)->button = 0;
     }
+    GISA_SWITCH(widget)->priv->button = 0;
     return FALSE;
 }

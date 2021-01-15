@@ -173,10 +173,10 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     guint size=(alloc.width<=alloc.height)*alloc.width+(alloc.width>alloc.height)*alloc.height;    
     guint ro = (size - 2) / 2;
     guint ri = (size - 2) / 3;
-    cairo_arc(cr, size / 2, size / 2, ro, 120 * G_PI / 180, 420 * G_PI / 180);
-    cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(330 * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(330 * G_PI / 180)), (ro - ri) / 2, 60 * G_PI / 180, 240 * G_PI / 180);
-    cairo_arc_negative(cr, size / 2, size / 2, ri, 60 * G_PI / 180, 120 * G_PI / 180);
-    cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(30 * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(30 * G_PI / 180)), (ro - ri) / 2, 300 * G_PI / 180, 120 * G_PI / 180);
+    cairo_arc(cr, size / 2, size / 2, ro, 2 * G_PI / 3, 7 * G_PI / 3);
+    cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(11 * G_PI / 6)), (size / 2) + (((ro + ri) / 2) * cos(11 * G_PI / 6)), (ro - ri) / 2, G_PI / 3, 4 * G_PI / 3);
+    cairo_arc_negative(cr, size / 2, size / 2, ri, G_PI / 3, 2 * G_PI / 3);
+    cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(G_PI / 6)), (size / 2) + (((ro + ri) / 2) * cos(G_PI / 6)), (ro - ri) / 2, 5 * G_PI / 3, 2 * G_PI / 3);
     cairo_close_path(cr);
     //fill
     g_value_init(&styleVal, GDK_TYPE_RGBA);
@@ -224,10 +224,10 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
         {
             val_color = g_value_get_boxed(&styleVal);
         }
-        cairo_arc(cr, size / 2, size / 2, ro - 2, 120 * G_PI / 180, ((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 120) * G_PI / 180);
+        cairo_arc(cr, size / 2, size / 2, ro - 2, 2 * G_PI / 3, ((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 120) * G_PI / 180);
         cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 30) * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 30) * G_PI / 180)), (ro - ri - 4) / 2, (120 + (300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue))) * G_PI / 180, (300 * (1 + ((priv->value - priv->minValue) / (priv->maxValue - priv->minValue)))) * G_PI / 180);
-        cairo_arc_negative(cr, size / 2, size / 2, ri + 2, ((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 120) * G_PI / 180, 120 * G_PI / 180);
-        cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(30 * G_PI / 180)), (size / 2) + (((ro + ri) / 2) * cos(30 * G_PI / 180)), (ro - ri - 4) / 2, 300 * G_PI / 180, 120 * G_PI / 180);
+        cairo_arc_negative(cr, size / 2, size / 2, ri + 2, ((300 * (priv->value - priv->minValue) / (priv->maxValue - priv->minValue)) + 120) * G_PI / 180, 2 * G_PI / 3);
+        cairo_arc(cr, (size / 2) - (((ro + ri) / 2) * sin(G_PI / 6)), (size / 2) + (((ro + ri) / 2) * cos(G_PI / 6)), (ro - ri - 4) / 2, 5 * G_PI / 3, 2 * G_PI / 3);
         cairo_close_path(cr);
         //fill
         if (val_color != NULL)
@@ -248,7 +248,7 @@ static gboolean gisa_gauge_draw(GtkWidget *widget, cairo_t *cr)
     val = (char *)malloc(sizeof(char) * 8);
     sprintf(val, "%.1f", priv->value);
     cairo_select_font_face(cr, "sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-    cairo_set_font_size(cr, 36 * size / 300);
+    cairo_set_font_size(cr, 9 * size / 75);
     cairo_text_extents(cr, val, &extent);
     cairo_move_to(cr, (size / 2) - ((extent.width / 2) + extent.x_bearing), (size / 2) - ((extent.height / 2) + extent.y_bearing));
     cairo_text_path(cr, val);

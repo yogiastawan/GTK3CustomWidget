@@ -6,8 +6,9 @@
 /* Properties enum*/
 enum
 {
-    P_0,    // for padding
-    P_VALUE // for value
+    P_0,     // for padding
+    P_VALUE, // for value
+    P_CONFIG
 };
 
 /* Private data structure */
@@ -76,7 +77,7 @@ static void gisa_switch_init(GisaSwitch *widget)
     //set default value
     priv->value = OFF;
     priv->button = 0;
-    priv->config=AUTO;
+    priv->config = AUTO;
 
     //create cache for faster access
     widget->priv = priv;
@@ -91,6 +92,9 @@ static void gisa_switch_set_property(GObject *object, guint prop_id, const GValu
     case P_VALUE:
         gisa_switch_set_value(widget, g_value_get_boolean(value));
         break;
+    case P_CONFIG:
+        gisa_switch_set_configuration(widget, g_value_get_uint(value));
+        break;
 
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -104,6 +108,9 @@ static void gisa_switch_get_property(GObject *object, guint prop_id, GValue *val
     {
     case P_VALUE:
         g_value_set_boolean(value, widget->priv->value);
+        break;
+    case P_CONFIG:
+        g_value_set_uint(value, widget->priv->config);
         break;
 
     default:
@@ -204,18 +211,20 @@ static gboolean gisa_switch_draw(GtkWidget *widget, cairo_t *cr)
     cairo_fill(cr);
     cairo_stroke(cr);
     //draw config icon
-    cairo_arc(cr,size/8,alloc.height-(size/8),iconThick/4,0,2*G_PI);
-    if (priv->config==AUTO)
+    cairo_arc(cr, size / 8, alloc.height - (size / 8), iconThick / 4, 0, 2 * G_PI);
+    if (priv->config == AUTO)
     {
         cairo_set_source_rgb(cr, 0, 0, 1); //auto->blue
-    }else if (priv->config==SWITCH_OFF)
+    }
+    else if (priv->config == SWITCH_OFF)
     {
         cairo_set_source_rgb(cr, 0, 0, 0); //off->black
-    }else if (priv->config==MANUAL)
+    }
+    else if (priv->config == MANUAL)
     {
         cairo_set_source_rgb(cr, 1, 0, 0); //manual->red
     }
-        
+
     cairo_fill(cr);
     return FALSE;
 }
@@ -254,12 +263,12 @@ void gisa_switch_set_value(GisaSwitch *widget, switchValue value)
 void gisa_switch_set_configuration(GisaSwitch *widget, switchConfig config)
 {
     g_return_if_fail(GISA_IS_SWITCH(widget));
-    widget->priv->config=config;
+    widget->priv->config = config;
 }
 
 switchConfig gisa_switch_get_configuration(GisaSwitch *widget)
 {
-    g_return_val_if_fail(GISA_IS_SWITCH(widget),255);
+    g_return_val_if_fail(GISA_IS_SWITCH(widget), 255);
     return widget->priv->config;
 }
 

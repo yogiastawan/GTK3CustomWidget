@@ -89,7 +89,7 @@ static void gisa_switch_set_property(GObject *object, guint prop_id, const GValu
     switch (prop_id)
     {
     case P_VALUE:
-        gisa_switch_set_value(widget, g_value_get_double(value));
+        gisa_switch_set_value(widget, g_value_get_boolean(value));
         break;
 
     default:
@@ -103,7 +103,7 @@ static void gisa_switch_get_property(GObject *object, guint prop_id, GValue *val
     switch (prop_id)
     {
     case P_VALUE:
-        g_value_set_double(value, widget->priv->value);
+        g_value_set_boolean(value, widget->priv->value);
         break;
 
     default:

@@ -14,6 +14,7 @@ enum
 struct _GisaSwitchPrivate
 {
     switchValue value;
+    switchConfig config;
     guint8 button;
     GdkWindow *window;
 };
@@ -75,6 +76,7 @@ static void gisa_switch_init(GisaSwitch *widget)
     //set default value
     priv->value = OFF;
     priv->button = 0;
+    priv->config=AUTO;
 
     //create cache for faster access
     widget->priv = priv;
@@ -169,7 +171,7 @@ static gboolean gisa_switch_draw(GtkWidget *widget, cairo_t *cr)
     else
     {
         cairo_set_source_rgb(cr, 1, 0, 0); //off->red
-    }    
+    }
     cairo_stroke(cr);
     //draw icon arc
     cairo_arc(cr, size / 2, size / 2, iconOutterRadius, G_PI / -3, 4 * G_PI / 3);
@@ -201,6 +203,20 @@ static gboolean gisa_switch_draw(GtkWidget *widget, cairo_t *cr)
     }
     cairo_fill(cr);
     cairo_stroke(cr);
+    //draw config icon
+    cairo_arc(cr,size/8,alloc.height-(size/8),iconThick/4,0,2*G_PI);
+    if (priv->config==AUTO)
+    {
+        cairo_set_source_rgb(cr, 0, 0, 1); //auto->blue
+    }else if (priv->config==SWITCH_OFF)
+    {
+        cairo_set_source_rgb(cr, 0, 0, 0); //off->black
+    }else if (priv->config==MANUAL)
+    {
+        cairo_set_source_rgb(cr, 1, 0, 0); //manual->red
+    }
+        
+    cairo_fill(cr);
     return FALSE;
 }
 static void gisa_switch_get_preferred_height(GtkWidget *widget, gint *minimum_height, gint *natural_height)
@@ -235,6 +251,18 @@ void gisa_switch_set_value(GisaSwitch *widget, switchValue value)
     gtk_widget_queue_draw(GTK_WIDGET(widget));
 }
 
+void gisa_switch_set_configuration(GisaSwitch *widget, switchConfig config)
+{
+    g_return_if_fail(GISA_IS_SWITCH(widget));
+    widget->priv->config=config;
+}
+
+switchConfig gisa_switch_get_configuration(GisaSwitch *widget)
+{
+    g_return_val_if_fail(GISA_IS_SWITCH(widget),255);
+    return widget->priv->config;
+}
+
 static gboolean gisa_switch_button_press(GtkWidget *widget, GdkEventButton *event)
 {
     g_return_val_if_fail(GISA_IS_SWITCH(widget), FALSE);
@@ -264,7 +292,7 @@ static gboolean gisa_switch_button_release(GtkWidget *widget, GdkEventButton *ev
         gtk_grab_remove(widget);
         GISA_SWITCH(widget)->priv->value = !GISA_SWITCH(widget)->priv->value;
         gtk_widget_queue_draw(widget);
-        g_print("Button released");
+        // g_print("Button released");
     }
     GISA_SWITCH(widget)->priv->button = 0;
     return FALSE;

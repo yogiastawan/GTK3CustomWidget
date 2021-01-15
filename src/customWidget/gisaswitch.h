@@ -10,6 +10,13 @@
     typedef gboolean switchValue;
     #define ON TRUE
     #define OFF FALSE
+
+    typedef guint8 switchConfig;
+    enum{
+        MANUAL,
+        SWITCH_OFF,
+        AUTO
+    };
     /* Standart GObject macros */
     #define GISA_TYPE_SWITCH (gisa_switch_get_type())
     #define GISA_SWITCH(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj),GISA_TYPE_SWITCH, GisaSwitch))
@@ -43,6 +50,10 @@
     void gisa_switch_set_value(GisaSwitch *widget, switchValue value);
     //get value widget
     switchValue gisa_switch_get_value(GisaSwitch *widget);
+    //set switch config
+    void gisa_switch_set_configuration(GisaSwitch *widget, switchConfig config);
+    //get switch config
+    switchConfig gisa_switch_get_configuration(GisaSwitch *widget);
     
     G_END_DECLS
     

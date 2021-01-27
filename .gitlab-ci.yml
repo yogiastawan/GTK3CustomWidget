@@ -64,28 +64,28 @@ test:ubuntu-x86_64:
   dependencies:
     - build:ubuntu-x86_64
   
-  test:ubuntu-x86:
+test:ubuntu-x86:
   stage: test
   script:
     - echo "TEST"
   dependencies:
     - build:ubuntu-x86
 
-  test:ubuntu-arm64v8:
+test:ubuntu-arm64v8:
   stage: test
   script:
     - echo "TEST"
   dependencies:
     - build:ubuntu-arm64v8
 
-  test:ubuntu-arm32v7:
+test:ubuntu-arm32v7:
   stage: test
   script:
     - echo "TEST"
   dependencies:
     - build:ubuntu-arm32v7
 
-  test:raspbian:
+test:raspbian:
   stage: test
   script:
     - echo "TEST"

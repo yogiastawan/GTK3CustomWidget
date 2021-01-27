@@ -1,5 +1,6 @@
 #include "gisagauge.h"
 #include <math.h>
+#include <stdlib.h>
 
 /* Properties enum*/
 enum

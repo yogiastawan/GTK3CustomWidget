@@ -14,6 +14,7 @@ build:ubuntu arm64:
   stage: build
   image: arm64v8/ubuntu:latest
   script:
+    - export DEBIAN_FRONTEND=noninteractive
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
 
@@ -21,6 +22,7 @@ build:ubuntu arm32:
   stage: build
   image: arm32v7/ubuntu:latest
   script:
+    - export DEBIAN_FRONTEND=noninteractive
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
 
@@ -28,6 +30,7 @@ build:raspbian:
   stage: build
   image: raspbian/stretch
   script:
+    - export DEBIAN_FRONTEND=noninteractive
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
 

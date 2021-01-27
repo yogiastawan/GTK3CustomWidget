@@ -1,5 +1,6 @@
 #include "gisacompass.h"
 #include <math.h>
+#include <stdlib.h>
 
 /* Properties enum*/
 enum

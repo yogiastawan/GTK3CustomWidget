@@ -39,7 +39,7 @@ void main_ui(GtkApplication *app, gpointer *user_data)
 
 	myGauge = gisa_gauge_new();
 	myCompass = gisa_compass_new();
-	mySwitch=gisa_switch_new();
+	mySwitch = gisa_switch_new();
 	gtk_box_pack_start(GTK_BOX(box), boxh, TRUE, TRUE, 0);
 
 	GtkAdjustment *scale1Adj = gtk_adjustment_new(0, 0, 100, 1, 5, 0);
@@ -55,7 +55,7 @@ void main_ui(GtkApplication *app, gpointer *user_data)
 
 	gtk_box_pack_start(GTK_BOX(boxh), myGauge, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(boxh), myCompass, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(boxh),mySwitch,FALSE,TRUE,0);
+	gtk_box_pack_start(GTK_BOX(boxh), mySwitch, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(box), slider_box, TRUE, TRUE, 0);
 
 	//style
@@ -63,7 +63,7 @@ void main_ui(GtkApplication *app, gpointer *user_data)
 	gtk_css_provider_load_from_path(provider, "/home/yogiastawan/Programming/C/GTK3CustomWidget/res/style/style.css", NULL);
 	// GtkStyleContext *ctx;
 	// ctx = gtk_widget_get_style_context(myGauge);
-	gtk_style_context_add_provider_for_screen(gtk_window_get_screen(GTK_WINDOW(window)),GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	gtk_style_context_add_provider_for_screen(gtk_window_get_screen(GTK_WINDOW(window)), GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 	// gtk_style_context_add_provider(ctx, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
 	gtk_widget_show_all(window);

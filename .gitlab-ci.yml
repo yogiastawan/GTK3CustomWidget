@@ -25,27 +25,27 @@ build:ubuntu-x86:
     paths:
       - ./build-release
   
-build:ubuntu-arm64v8:
-  stage: build
-  image: arm64v8/ubuntu
-  script:
-    - export DEBIAN_FRONTEND=noninteractive
-    - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
-    - make
-  artifacts:
-    paths:
-      - ./build-release
+# build:ubuntu-arm64v8:
+#   stage: build
+#   image: arm64v8/ubuntu
+#   script:
+#     - export DEBIAN_FRONTEND=noninteractive
+#     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
+#     - make
+#   artifacts:
+#     paths:
+#       - ./build-release
 
-build:ubuntu-arm32v7:
-  stage: build
-  image: arm32v7/ubuntu
-  script:
-    - export DEBIAN_FRONTEND=noninteractive
-    - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
-    - make
-  artifacts:
-    paths:
-      - ./build-release
+# build:ubuntu-arm32v7:
+#   stage: build
+#   image: arm32v7/ubuntu
+#   script:
+#     - export DEBIAN_FRONTEND=noninteractive
+#     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
+#     - make
+#   artifacts:
+#     paths:
+#       - ./build-release
 
 build:raspbian:
   stage: build
@@ -76,23 +76,23 @@ test:ubuntu-x86:
   dependencies:
     - build:ubuntu-x86
 
-test:ubuntu-arm64v8:
-  stage: test
-  script:
-    - echo "TEST"
-    - test -e ./build-release/GTK3CustomWidget
-    - ./build-release/GTK3CustomWidget
-  dependencies:
-    - build:ubuntu-arm64v8
+# test:ubuntu-arm64v8:
+#   stage: test
+#   script:
+#     - echo "TEST"
+#     - test -e ./build-release/GTK3CustomWidget
+#     - ./build-release/GTK3CustomWidget
+#   dependencies:
+#     - build:ubuntu-arm64v8
 
-test:ubuntu-arm32v7:
-  stage: test
-  script:
-    - echo "TEST"
-    - test -e ./build-release/GTK3CustomWidget
-    - ./build-release/GTK3CustomWidget
-  dependencies:
-    - build:ubuntu-arm32v7
+# test:ubuntu-arm32v7:
+#   stage: test
+#   script:
+#     - echo "TEST"
+#     - test -e ./build-release/GTK3CustomWidget
+#     - ./build-release/GTK3CustomWidget
+#   dependencies:
+#     - build:ubuntu-arm32v7
 
 test:raspbian:
   stage: test
@@ -119,21 +119,21 @@ package:ubuntu-x86:
   dependencies:
     - test:ubuntu-x86
 
-package:ubuntu-arm64v8:
-  stage: package
-  script:
-    - echo "PACKAGING"
-    - ls
-  dependencies:
-    - test:ubuntu-arm64v8
+# package:ubuntu-arm64v8:
+#   stage: package
+#   script:
+#     - echo "PACKAGING"
+#     - ls
+#   dependencies:
+#     - test:ubuntu-arm64v8
 
-package:ubuntu-arm32v7:
-  stage: package
-  script:
-    - echo "PACKAGING"
-    - ls
-  dependencies:
-    - test:ubuntu-arm32v7
+# package:ubuntu-arm32v7:
+#   stage: package
+#   script:
+#     - echo "PACKAGING"
+#     - ls
+#   dependencies:
+#     - test:ubuntu-arm32v7
 
 package:raspbian:
   stage: package

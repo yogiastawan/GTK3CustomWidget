@@ -9,6 +9,9 @@ build:ubuntu-x86_64:
     - export DEBIAN_FRONTEND=noninteractive
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
+  artifacts:
+    paths:
+      ./build-release
 
 build:ubuntu-x86:
   stage: build
@@ -17,6 +20,9 @@ build:ubuntu-x86:
     - export DEBIAN_FRONTEND=noninteractive
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
+  artifacts:
+    paths:
+      ./build-release
   
 build:ubuntu-arm64v8:
   stage: build
@@ -25,6 +31,9 @@ build:ubuntu-arm64v8:
     - export DEBIAN_FRONTEND=noninteractive
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
+  artifacts:
+    paths:
+      ./build-release
 
 build:ubuntu-arm32v7:
   stage: build
@@ -33,6 +42,9 @@ build:ubuntu-arm32v7:
     - export DEBIAN_FRONTEND=noninteractive
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
+  artifacts:
+    paths:
+      ./build-release
 
 build:raspbian:
   stage: build
@@ -41,6 +53,9 @@ build:raspbian:
     - export DEBIAN_FRONTEND=noninteractive
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
+  artifacts:
+    paths:
+      ./build-release
 
 test:
   stage: test

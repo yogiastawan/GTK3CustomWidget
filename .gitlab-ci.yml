@@ -2,7 +2,7 @@ stages:
   - build
   - test
 
-build:ubuntu x86_64:
+build:ubuntu-x86_64:
   stage: build
   image: ubuntu
   script:
@@ -10,7 +10,7 @@ build:ubuntu x86_64:
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
   
-build:ubuntu x86_64:
+build:ubuntu-arm64v8:
   stage: build
   image: arm64v8/ubuntu
   script:
@@ -18,7 +18,7 @@ build:ubuntu x86_64:
     - apt-get update && apt-get install -y build-essential libtool pkg-config libgtk-3-dev
     - make
 
-build:ubuntu arm32:
+build:ubuntu-arm32v7:
   stage: build
   image: arm32v7/ubuntu
   script:

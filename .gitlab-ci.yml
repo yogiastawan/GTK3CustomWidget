@@ -107,6 +107,7 @@ package:ubuntu-x86_64:
   stage: package
   script:
     - echo "PACKAGING"
+    - ls
   dependencies:
     - test:ubuntu-x86_64
   
@@ -114,6 +115,7 @@ package:ubuntu-x86:
   stage: package
   script:
     - echo "PACKAGING"
+    - ls
   dependencies:
     - test:ubuntu-x86
 
@@ -121,6 +123,7 @@ package:ubuntu-arm64v8:
   stage: package
   script:
     - echo "PACKAGING"
+    - ls
   dependencies:
     - test:ubuntu-arm64v8
 
@@ -128,6 +131,7 @@ package:ubuntu-arm32v7:
   stage: package
   script:
     - echo "PACKAGING"
+    - ls
   dependencies:
     - test:ubuntu-arm32v7
 
@@ -135,5 +139,6 @@ package:raspbian:
   stage: package
   script:
     - echo "PACKAGING"
+    - ls
   dependencies:
     - test:raspbian

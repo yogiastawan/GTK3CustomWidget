@@ -11,7 +11,7 @@ build:ubuntu-x86_64:
     - make
   artifacts:
     paths:
-      ./build-release
+      - ./build-release
 
 build:ubuntu-x86:
   stage: build
@@ -22,7 +22,7 @@ build:ubuntu-x86:
     - make
   artifacts:
     paths:
-      ./build-release
+      - ./build-release
   
 build:ubuntu-arm64v8:
   stage: build
@@ -33,7 +33,7 @@ build:ubuntu-arm64v8:
     - make
   artifacts:
     paths:
-      ./build-release
+      - ./build-release
 
 build:ubuntu-arm32v7:
   stage: build
@@ -44,7 +44,7 @@ build:ubuntu-arm32v7:
     - make
   artifacts:
     paths:
-      ./build-release
+      - ./build-release
 
 build:raspbian:
   stage: build
@@ -55,7 +55,7 @@ build:raspbian:
     - make
   artifacts:
     paths:
-      ./build-release
+      - ./build-release
 
 test:
   stage: test

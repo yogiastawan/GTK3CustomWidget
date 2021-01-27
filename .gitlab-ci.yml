@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - package
 
 build:ubuntu-x86_64:
   stage: build
@@ -61,6 +62,8 @@ test:ubuntu-x86_64:
   stage: test
   script:
     - echo "TEST"
+    - test -e ./build-release/GTK3CustomWidget
+    - ./build-release/GTK3CustomWidget
   dependencies:
     - build:ubuntu-x86_64
   
@@ -68,6 +71,8 @@ test:ubuntu-x86:
   stage: test
   script:
     - echo "TEST"
+    - test -e ./build-release/GTK3CustomWidget
+    - ./build-release/GTK3CustomWidget
   dependencies:
     - build:ubuntu-x86
 
@@ -75,6 +80,8 @@ test:ubuntu-arm64v8:
   stage: test
   script:
     - echo "TEST"
+    - test -e ./build-release/GTK3CustomWidget
+    - ./build-release/GTK3CustomWidget
   dependencies:
     - build:ubuntu-arm64v8
 
@@ -82,6 +89,8 @@ test:ubuntu-arm32v7:
   stage: test
   script:
     - echo "TEST"
+    - test -e ./build-release/GTK3CustomWidget
+    - ./build-release/GTK3CustomWidget
   dependencies:
     - build:ubuntu-arm32v7
 
@@ -89,5 +98,42 @@ test:raspbian:
   stage: test
   script:
     - echo "TEST"
+    - test -e ./build-release/GTK3CustomWidget
+    - ./build-release/GTK3CustomWidget
   dependencies:
     - build:raspbian
+
+package:ubuntu-x86_64:
+  stage: package
+  script:
+    - echo "PACKAGING"
+  dependencies:
+    - test:ubuntu-x86_64
+  
+package:ubuntu-x86:
+  stage: package
+  script:
+    - echo "PACKAGING"
+  dependencies:
+    - test:ubuntu-x86
+
+package:ubuntu-arm64v8:
+  stage: package
+  script:
+    - echo "PACKAGING"
+  dependencies:
+    - test:ubuntu-arm64v8
+
+package:ubuntu-arm32v7:
+  stage: package
+  script:
+    - echo "PACKAGING"
+  dependencies:
+    - test:ubuntu-arm32v7
+
+package:raspbian:
+  stage: package
+  script:
+    - echo "PACKAGING"
+  dependencies:
+    - test:raspbian

@@ -1,6 +1,6 @@
 stages:
   - build
-  - test
+  - test_and_prepare
   - package
 
 before_script:
@@ -57,20 +57,18 @@ build:raspbian:
       - ./build-release
 
 test:ubuntu-x86_64:
-  stage: test
+  stage: test_and_prepare
   script:
     - echo "TEST"
     - test -e ./build-release/GTK3CustomWidget
-    - ./build-release/GTK3CustomWidget
   needs:
     - build:ubuntu-x86_64
   
 test:ubuntu-x86:
-  stage: test
+  stage: test_and_prepare
   script:
     - echo "TEST"
     - test -e ./build-release/GTK3CustomWidget
-    - ./build-release/GTK3CustomWidget
   needs:
     - build:ubuntu-x86
 
@@ -93,11 +91,10 @@ test:ubuntu-x86:
 #     - build:ubuntu-arm32v7
 
 test:raspbian:
-  stage: test
+  stage: test_and_prepare
   script:
     - echo "TEST"
     - test -e ./build-release/GTK3CustomWidget
-    - ./build-release/GTK3CustomWidget
   needs:
     - build:raspbian
 
